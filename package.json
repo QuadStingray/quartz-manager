@@ -1,0 +1,22 @@
+{
+  "name": "quartz-manager",
+  "organization": "dev.quadstingray",
+  "version": "0.5.0",
+  "description": "",
+  "directories": {
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuadStingray/quartz-manager.git"
+  },
+  "author": "info@mongocamp.dev",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/QuadStingray/quartz-manager/issues"
+  },
+  "homepage": "https://mongodb-server.mongocamp.dev",
+  "devDependencies": {
+  }
+}
