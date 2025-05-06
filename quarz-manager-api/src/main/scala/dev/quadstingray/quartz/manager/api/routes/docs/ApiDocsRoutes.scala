@@ -1,33 +1,20 @@
 package dev.quadstingray.quartz.manager.api.routes.docs
 
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
-import dev.quadstingray.quartz.manager.api.model.JobConfig
-import dev.quadstingray.quartz.manager.api.model.JobInformation
-import dev.quadstingray.quartz.manager.api.model.ModelConstants
-import dev.quadstingray.quartz.manager.api.ActorHandler
 import dev.quadstingray.quartz.manager.api.BuildInfo
-import io.circe.generic.auto._
-import org.quartz.Job
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import sttp.apispec.openapi.circe.yaml.RichOpenAPI
-import sttp.capabilities
 import sttp.capabilities.pekko.PekkoStreams
 import sttp.capabilities.WebSockets
-import sttp.model.headers.WWWAuthenticateChallenge
 import sttp.model.Method
-import sttp.model.StatusCode
 import sttp.tapir._
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
-import sttp.tapir.endpoint
-import sttp.tapir.generic.auto._
 import sttp.tapir.generic.auto.SchemaDerivation
-import sttp.tapir.json.circe.jsonBody
-import sttp.tapir.model.UsernamePassword
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.swagger.SwaggerUI
 import sttp.tapir.swagger.SwaggerUIOptions
+
 object ApiDocsRoutes extends CirceSchema with SchemaDerivation {
   val nameOpenApiDocsYamlName = "docs.yaml"
 
@@ -81,6 +68,6 @@ object ApiDocsRoutes extends CirceSchema with SchemaDerivation {
   }
 
   def isSwaggerEnabled: Boolean = {
-    true //
+    true // todo
   }
 }

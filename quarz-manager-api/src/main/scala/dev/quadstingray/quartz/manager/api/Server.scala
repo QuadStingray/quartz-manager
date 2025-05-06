@@ -3,19 +3,28 @@ package dev.quadstingray.quartz.manager.api
 import com.typesafe.scalalogging.LazyLogging
 import dev.quadstingray.quartz.manager.api.routes.docs.ApiDocsRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
+import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.server.Directives.reject
 import org.apache.pekko.http.scaladsl.server.Route
 import org.apache.pekko.http.scaladsl.server.RouteConcatenation
 import org.apache.pekko.http.scaladsl.Http
+import org.quartz.impl.StdSchedulerFactory
+import org.quartz.Scheduler
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import sttp.capabilities.pekko.PekkoStreams
 import sttp.capabilities.WebSockets
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
 import sttp.tapir.server.ServerEndpoint
 
-class Server extends LazyLogging with RouteConcatenation {
+class Server(
+  classGraphService: ClassGraphService = new ClassGraphService(),
+  scheduler: Scheduler = StdSchedulerFactory.getDefaultScheduler,
+  httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter
+) extends LazyLogging
+    with RouteConcatenation {
 
   implicit private lazy val actorSystem: ActorSystem = ActorHandler.requestActorSystem
   implicit private lazy val ex: ExecutionContext     = ActorHandler.requestExecutionContext
@@ -28,13 +37,13 @@ class Server extends LazyLogging with RouteConcatenation {
   private var shutdownStarted: Boolean                                 = false
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
-    JobRoutes.endpoints
+    new JobRoutes(classGraphService, scheduler).endpoints
   }
 
   private def routes: Route = {
     val internalEndPoints = serverEndpoints ++ ApiDocsRoutes.addDocsRoutes(serverEndpoints)
     val allEndpoints = internalEndPoints.map(
-      ep => HttpServer.httpServerInterpreter.toRoute(ep)
+      ep => httpServerInterpreter.toRoute(ep)
     )
     concat(allEndpoints: _*)
   }
