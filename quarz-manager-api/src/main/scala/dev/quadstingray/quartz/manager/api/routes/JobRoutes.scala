@@ -3,27 +3,31 @@ import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
 import dev.quadstingray.quartz.manager.api.model.ModelConstants
+import dev.quadstingray.quartz.manager.api.service.ClassGraphService
+import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
 import org.quartz.Job
+import org.quartz.JobDataMap
+import org.quartz.JobKey
+import org.quartz.Scheduler
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.MapHasAsJava
 import sttp.capabilities
 import sttp.capabilities.pekko.PekkoStreams
-import sttp.model.headers.WWWAuthenticateChallenge
 import sttp.model.Method
 import sttp.model.StatusCode
 import sttp.tapir._
-import sttp.tapir.endpoint
 import sttp.tapir.generic.auto._
-import sttp.tapir.generic.auto.SchemaDerivation
 import sttp.tapir.json.circe.jsonBody
-import sttp.tapir.model.UsernamePassword
 import sttp.tapir.server.ServerEndpoint
 
-object JobRoutes extends CirceSchema {
-  implicit val ex: ExecutionContext = ActorHandler.requestExecutionContext
-  private val jobApiBaseEndpoint    = endpoint.tag("Jobs").in("system" / "jobs")
+class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) extends CirceSchema {
+  implicit val ex: ExecutionContext   = ActorHandler.requestExecutionContext
+  val jobService: JobSchedulerService = new JobSchedulerService(classGraphService, scheduler)
+
+  private val jobApiBaseEndpoint = endpoint.tag("Jobs").in("system" / "jobs")
 
   val jobsListRoutes = jobApiBaseEndpoint
     .out(jsonBody[List[JobInformation]])
@@ -36,12 +40,16 @@ object JobRoutes extends CirceSchema {
     )
 
   def jobsList(): Future[Either[Unit, List[JobInformation]]] = {
-    Future { Right { List.empty } }
+    Future {
+      Right {
+        jobService.jobsList()
+      }
+    }
   }
 
   val registerJobRoutes = jobApiBaseEndpoint
     .in(jsonBody[JobConfig])
-    .out(jsonBody[Option[JobInformation]])
+    .out(jsonBody[JobInformation])
     .summary("Register Job")
     .description("Register an Job and return the JobInformation with next schedule information")
     .method(Method.PUT)
@@ -50,8 +58,12 @@ object JobRoutes extends CirceSchema {
       config => registerJob(config)
     )
 
-  def registerJob(jobConfig: JobConfig): Future[Either[Unit, Option[JobInformation]]] = {
-    Future { Right { None } }
+  def registerJob(jobConfig: JobConfig): Future[Either[Unit, JobInformation]] = {
+    Future {
+      Right {
+        jobService.scheduleJob(jobConfig)
+      }
+    }
   }
 
   lazy val jobGroupParameter =
@@ -64,7 +76,7 @@ object JobRoutes extends CirceSchema {
   val updateJobRoutes = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .in(jsonBody[JobConfig])
-    .out(jsonBody[Option[JobInformation]])
+    .out(jsonBody[JobInformation])
     .summary("Update Job")
     .description("Add Job and get JobInformation back")
     .method(Method.PATCH)
@@ -73,8 +85,13 @@ object JobRoutes extends CirceSchema {
       parameter => updateJob(parameter)
     )
 
-  def updateJob(parameter: (String, String, JobConfig)): Future[Either[Unit, Option[JobInformation]]] = {
-    Future { Right { None } }
+  def updateJob(parameter: (String, String, JobConfig)): Future[Either[Unit, JobInformation]] = {
+    Future {
+      Right {
+        jobService.removeJobFromScheduler(parameter._1, parameter._2)
+        jobService.scheduleJob(parameter._3)
+      }
+    }
   }
 
   val deleteJobRoutes = jobApiBaseEndpoint
@@ -89,7 +106,11 @@ object JobRoutes extends CirceSchema {
     )
 
   def deleteJob(parameter: (String, String)): Future[Either[Unit, Unit]] = {
-    Future { Right { List.empty } }
+    Future {
+      Right {
+        jobService.removeJobFromScheduler(parameter._1, parameter._2)
+      }
+    }
   }
 
   val jobClassesRoutes = jobApiBaseEndpoint
@@ -104,8 +125,16 @@ object JobRoutes extends CirceSchema {
     )
 
   def jobClassesList(): Future[Either[Unit, List[String]]] = {
-//      ReflectionService.getSubClassesList(classOf[Job]).map(_.getName).filterNot(_.startsWith("org.quartz")).sorted
-    Future { Right { List.empty } }
+    Future {
+      Right {
+        classGraphService
+          .getSubClassesList(classOf[Job])
+          .filter(
+            cI => !cI.isAbstract && !cI.isInterface
+          )
+          .map(_.getName)
+      }
+    }
   }
 
   val executeJobRoutes = jobApiBaseEndpoint
@@ -121,10 +150,15 @@ object JobRoutes extends CirceSchema {
     )
 
   def executeJob(parameter: (String, String, Map[String, Any])): Future[Either[Unit, Unit]] = {
-    ???
+    Future {
+      Right {
+        jobService.executeJob(parameter._1, parameter._2, parameter._3)
+      }
+    }
   }
 
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
     List(jobsListRoutes, registerJobRoutes, updateJobRoutes, deleteJobRoutes, executeJobRoutes, jobClassesRoutes)
   }
+
 }

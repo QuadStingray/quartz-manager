@@ -3,16 +3,17 @@ package dev.quadstingray.quartz.manager.api
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.pekko.http.scaladsl.model.AttributeKey
 import org.apache.pekko.http.scaladsl.server.RequestContext
-import sttp.tapir.server.interceptor.RequestInterceptor
-import sttp.tapir.server.interceptor.cors.CORSInterceptor
-import sttp.tapir.server.pekkohttp.{PekkoHttpServerInterpreter, PekkoHttpServerOptions}
-
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import scala.util.Random
+import sttp.tapir.server.interceptor.cors.CORSInterceptor
+import sttp.tapir.server.interceptor.RequestInterceptor
+import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
+import sttp.tapir.server.pekkohttp.PekkoHttpServerOptions
 
 object HttpServer extends LazyLogging {
-  implicit val ex: ExecutionContext = ActorHandler.requestExecutionContext
-  val requestIdAttributeKey         = AttributeKey[String]("x-request-id")
+  implicit val ex: ExecutionContext                    = ActorHandler.requestExecutionContext
+  lazy val requestIdAttributeKey: AttributeKey[String] = AttributeKey[String]("X-REQUEST-ID")
 
   private val serverOptions: PekkoHttpServerOptions = {
     val serverOptions = PekkoHttpServerOptions.customiseInterceptors
@@ -27,6 +28,6 @@ object HttpServer extends LazyLogging {
     serverOptions.options
   }
 
-  val httpServerInterpreter: PekkoHttpServerInterpreter = PekkoHttpServerInterpreter(serverOptions)
+  val defaultHttpServerInterpreter: PekkoHttpServerInterpreter = PekkoHttpServerInterpreter(serverOptions)
 
 }
