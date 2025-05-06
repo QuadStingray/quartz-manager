@@ -17,4 +17,6 @@ libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5"
 
 libraryDependencies += "joda-time" % "joda-time" % "2.14.0"
 
+libraryDependencies += "io.github.classgraph" % "classgraph" % "4.8.179"
+
 buildInfoOptions += BuildInfoOption.BuildTime

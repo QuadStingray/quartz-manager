@@ -24,6 +24,6 @@ object QuarzManagerUi extends LazyLogging {
     val resourcesEndpoint: ServerEndpoint[PekkoStreams with WebSockets, Future] = {
       staticResourcesGetServerEndpoint(stringToPath("ui"))(getClass.getClassLoader, s"META-INF/resources/webjars/quartz-manager-ui/")
     }
-    HttpServer.httpServerInterpreter.toRoute(resourcesEndpoint)
+    HttpServer.defaultHttpServerInterpreter.toRoute(resourcesEndpoint)
   }
 }
