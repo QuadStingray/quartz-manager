@@ -8,7 +8,7 @@ import sttp.tapir.files.staticResourcesGetServerEndpoint
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.stringToPath
 
-class BaseServerSuite extends munit.FunSuite {
+class UiServerSuite extends munit.FunSuite {
   test("list users as admin") {
     val server = new Server()
     server.registerAfterLoadedRoutes(QuarzManagerUi.uiRoutes)
