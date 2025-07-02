@@ -1,11 +1,14 @@
 package dev.quadstingray.quartz.manager
-import org.quartz.Job
+import dev.quadstingray.quartz.job.HistoryJob
+import java.lang.System.Logger.Level
 import org.quartz.JobExecutionContext
 
-class SampleJob extends Job {
+class SampleJob extends HistoryJob {
 
   override def execute(context: JobExecutionContext): Unit = {
-    println("Hello Sample Job")
+    addToLog("Hello Sample Job")
+    addToLog("Error", Level.ERROR)
+    addToLog("Bllu", Level.DEBUG)
   }
 
 }
