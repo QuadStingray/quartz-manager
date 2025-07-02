@@ -85,7 +85,7 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
       triggerCron = schedulerTriggerList.filter(_.isInstanceOf[CronTrigger]).map(_.asInstanceOf[CronTrigger].getCronExpression).headOption.getOrElse("")
     }
     else {
-      scheduleInfo = Some(s"Job `${jobName}` in group `${jobGroup}` is not scheduled.")
+      scheduleInfo = Some(s"Job `$jobName` in group `$jobGroup` is not scheduled.")
     }
     JobInformation(
       jobName,

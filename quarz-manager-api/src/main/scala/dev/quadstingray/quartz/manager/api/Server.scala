@@ -3,7 +3,10 @@ package dev.quadstingray.quartz.manager.api
 import com.typesafe.scalalogging.LazyLogging
 import dev.quadstingray.quartz.manager.api.routes.docs.ApiDocsRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
+import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
+import dev.quadstingray.quartz.manager.api.service.auth.DefaultAuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
+import dev.quadstingray.quartz.manager.api.service.ConfigService
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.http.scaladsl.server.Directives.reject
 import org.apache.pekko.http.scaladsl.server.Route
@@ -21,6 +24,7 @@ import sttp.tapir.server.ServerEndpoint
 
 class Server(
   classGraphService: ClassGraphService = new ClassGraphService(),
+  authenticationService: AuthenticationService = new DefaultAuthenticationService(),
   scheduler: Scheduler = StdSchedulerFactory.getDefaultScheduler,
   httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter
 ) extends LazyLogging
@@ -37,11 +41,11 @@ class Server(
   private var shutdownStarted: Boolean                                 = false
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
-    new JobRoutes(classGraphService, scheduler).endpoints
+    new JobRoutes(authenticationService, classGraphService, scheduler).endpoints
   }
 
   private def routes: Route = {
-    val internalEndPoints = serverEndpoints ++ ApiDocsRoutes.addDocsRoutes(serverEndpoints)
+    val internalEndPoints = ApiDocsRoutes.addDocsRoutes(serverEndpoints) ++ serverEndpoints
     val allEndpoints = internalEndPoints.map(
       ep => httpServerInterpreter.toRoute(ep)
     )
@@ -52,8 +56,8 @@ class Server(
     preLoadedRoutes.foldLeft[Route](reject)(_ ~ _) ~ r ~ afterLoadedRoutes.foldLeft[Route](reject)(_ ~ _)
   }
 
-  val interface: String = "localhost"
-  val port: Int         = 8080
+  val interface: String = ConfigService.getString("dev.quadstingray.quarz-manager.interface")
+  val port: Int         = ConfigService.getInt("dev.quadstingray.quarz-manager.port")
 
   def startServer(): Future[Unit] = {
     beforeServerStartCallBacks.foreach(
