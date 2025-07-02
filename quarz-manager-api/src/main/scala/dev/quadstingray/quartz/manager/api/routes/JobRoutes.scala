@@ -1,4 +1,5 @@
 package dev.quadstingray.quartz.manager.api.routes
+
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
