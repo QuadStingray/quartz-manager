@@ -43,8 +43,9 @@ class Server(
   private var shutdownStarted: Boolean                                 = false
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
-    new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++ new HistoryRoutes(authenticationService).endpoints ++
-      new SchedulerRoutes(authenticationService, scheduler).endpoints
+    new SchedulerRoutes(authenticationService, scheduler).endpoints ++
+      new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++
+      new HistoryRoutes(authenticationService).endpoints
   }
 
   private def routes: Route = {
