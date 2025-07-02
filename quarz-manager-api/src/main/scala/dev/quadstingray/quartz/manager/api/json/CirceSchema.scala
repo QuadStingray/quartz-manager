@@ -5,8 +5,10 @@ import io.circe.Decoder.Result
 import io.circe.Encoder
 import io.circe.HCursor
 import io.circe.Json
+import java.lang.System.Logger.Level
 import java.util.Date
 import org.joda.time.DateTime
+import scala.collection.mutable.ListBuffer
 import sttp.tapir.Schema
 import sttp.tapir.SchemaType
 
@@ -21,6 +23,16 @@ trait CirceSchema {
     override def apply(c: HCursor): Result[Date] = Decoder.decodeString
       .map(
         s => new DateTime(s).toDate
+      )
+      .apply(c)
+  }
+
+  implicit val LevelFormat: Encoder[java.lang.System.Logger.Level] with Decoder[java.lang.System.Logger.Level] = new Encoder[java.lang.System.Logger.Level]
+    with Decoder[java.lang.System.Logger.Level] {
+    override def apply(a: java.lang.System.Logger.Level): Json = Encoder.encodeString.apply(a.toString)
+    override def apply(c: HCursor): Result[java.lang.System.Logger.Level] = Decoder.decodeString
+      .map(
+        s => java.lang.System.Logger.Level.valueOf(s)
       )
       .apply(c)
   }
