@@ -2,12 +2,14 @@ name := "quartz-manager-api"
 
 buildInfoPackage := "dev.quadstingray.quartz.manager.api"
 
-val TapirVersion = "1.11.25"
+val TapirVersion = "1.11.32"
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-pekko-http-server" % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"      % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-sttp-client"       % TapirVersion
+
+libraryDependencies += "com.typesafe" % "config" % "1.4.3"
 
 libraryDependencies += "com.github.jwt-scala" %% "jwt-circe" % "10.0.4"
 

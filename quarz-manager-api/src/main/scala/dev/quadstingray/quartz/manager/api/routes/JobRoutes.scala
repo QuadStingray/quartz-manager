@@ -3,17 +3,15 @@ import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
 import dev.quadstingray.quartz.manager.api.model.ModelConstants
+import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
 import org.quartz.Job
-import org.quartz.JobDataMap
-import org.quartz.JobKey
 import org.quartz.Scheduler
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
-import scala.jdk.CollectionConverters.MapHasAsJava
 import sttp.capabilities
 import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.Method
@@ -23,11 +21,11 @@ import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
 import sttp.tapir.server.ServerEndpoint
 
-class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) extends CirceSchema {
+class JobRoutes(authenticationService: AuthenticationService, classGraphService: ClassGraphService, scheduler: Scheduler) extends CirceSchema {
   implicit val ex: ExecutionContext   = ActorHandler.requestExecutionContext
   val jobService: JobSchedulerService = new JobSchedulerService(classGraphService, scheduler)
 
-  private val jobApiBaseEndpoint = endpoint.tag("Jobs").in("system" / "jobs")
+  private val jobApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("Jobs").in("api" / "jobs")
 
   val jobsListRoutes = jobApiBaseEndpoint
     .out(jsonBody[List[JobInformation]])
@@ -35,17 +33,14 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .description("Returns the List of all registered Jobs with full information")
     .method(Method.GET)
     .name("jobsList")
-    .serverLogic(
-      _ => jobsList()
-    )
-
-  def jobsList(): Future[Either[Unit, List[JobInformation]]] = {
-    Future {
-      Right {
-        jobService.jobsList()
-      }
+    .serverLogic {
+      _ => _ =>
+        Future {
+          Right {
+            jobService.jobsList()
+          }
+        }
     }
-  }
 
   val registerJobRoutes = jobApiBaseEndpoint
     .in(jsonBody[JobConfig])
@@ -55,7 +50,7 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .method(Method.PUT)
     .name("registerJob")
     .serverLogic(
-      config => registerJob(config)
+      _ => config => registerJob(config)
     )
 
   def registerJob(jobConfig: JobConfig): Future[Either[Unit, JobInformation]] = {
@@ -82,7 +77,7 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .method(Method.PATCH)
     .name("updateJob")
     .serverLogic(
-      parameter => updateJob(parameter)
+      _ => parameter => updateJob(parameter)
     )
 
   def updateJob(parameter: (String, String, JobConfig)): Future[Either[Unit, JobInformation]] = {
@@ -102,7 +97,7 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .method(Method.DELETE)
     .name("deleteJob")
     .serverLogic(
-      parameter => deleteJob(parameter)
+      _ => parameter => deleteJob(parameter)
     )
 
   def deleteJob(parameter: (String, String)): Future[Either[Unit, Unit]] = {
@@ -121,7 +116,7 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .method(Method.GET)
     .name("possibleJobsList")
     .serverLogic(
-      _ => jobClassesList()
+      _ => _ => jobClassesList()
     )
 
   def jobClassesList(): Future[Either[Unit, List[String]]] = {
@@ -146,7 +141,7 @@ class JobRoutes(classGraphService: ClassGraphService, scheduler: Scheduler) exte
     .method(Method.POST)
     .name("executeJob")
     .serverLogic(
-      parameter => executeJob(parameter)
+      _ => parameter => executeJob(parameter)
     )
 
   def executeJob(parameter: (String, String, Map[String, Any])): Future[Either[Unit, Unit]] = {
