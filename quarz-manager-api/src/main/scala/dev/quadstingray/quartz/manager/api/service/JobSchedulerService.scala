@@ -12,11 +12,11 @@ import scala.jdk.CollectionConverters.ListHasAsScala
 
 class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Scheduler) extends LazyLogging {
 
-  def executeJob(jobGroup: String, jobName: String, jobDataMap: Map[String, Any]): Unit = {
+  def executeJob(jobGroup: String, jobName: String, jobDataMap: Option[Map[String, Any]]): Unit = {
     if (!scheduler.isStarted) {
       logger.warn("Scheduler is not started job is added to queue")
     }
-    scheduler.triggerJob(new JobKey(jobName, jobGroup), new JobDataMap(jobDataMap.asJava))
+    scheduler.triggerJob(new JobKey(jobName, jobGroup), new JobDataMap(jobDataMap.getOrElse(Map.empty).asJava))
   }
 
   def removeJobFromScheduler(jobGroup: String, jobName: String): Unit = {

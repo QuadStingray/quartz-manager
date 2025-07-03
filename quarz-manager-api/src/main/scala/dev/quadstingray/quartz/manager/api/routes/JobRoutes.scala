@@ -135,7 +135,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
 
   val executeJobRoutes = jobApiBaseEndpoint
     .in(jobGroupParameter)
-    .in(jsonBody[Map[String, Any]].description("Job Data map"))
+    .in(jsonBody[Option[Map[String, Any]]].description("Job Data map"))
     .out(statusCode(StatusCode.NoContent).description("Job added to trigger"))
     .summary("Execute Job")
     .description("Execute scheduled Job manually")
@@ -145,7 +145,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
       _ => parameter => executeJob(parameter)
     )
 
-  def executeJob(parameter: (String, String, Map[String, Any])): Future[Either[Unit, Unit]] = {
+  def executeJob(parameter: (String, String, Option[Map[String, Any]])): Future[Either[Unit, Unit]] = {
     Future {
       Right {
         jobService.executeJob(parameter._1, parameter._2, parameter._3)
