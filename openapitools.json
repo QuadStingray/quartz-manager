@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/@openapitools/openapi-generator-cli/config.schema.json",
+  "spaces": 2,
+  "generator-cli": {
+    "version": "7.14.0",
+    "generators": {
+      "api-generator": {
+        "generatorName": "scala-sttp",
+        "output": "./target/client-project",
+        "inputSpec": "http://0.0.0.0:8080/docs/docs.yaml",
+        "additionalProperties": {
+          "mainPackage": "dev.quadstingray.quartz.manager.client",
+          "artifactId": "client",
+          "groupId": "dev.quadstingray.quartz.manager",
+          "jsonLibrary": "circe",
+          "dateLibrary": "joda"
+        }
+      }
+    }
+  }
+}

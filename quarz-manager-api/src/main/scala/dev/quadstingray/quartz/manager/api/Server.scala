@@ -32,6 +32,9 @@ class Server(
 ) extends LazyLogging
     with RouteConcatenation {
 
+  val interface: String = ConfigService.getString("dev.quadstingray.quarz-manager.interface")
+  val port: Int         = ConfigService.getInt("dev.quadstingray.quarz-manager.port")
+
   implicit private lazy val actorSystem: ActorSystem = ActorHandler.requestActorSystem
   implicit private lazy val ex: ExecutionContext     = ActorHandler.requestExecutionContext
 
@@ -59,9 +62,6 @@ class Server(
   private def routeHandler(r: Route): Route = {
     preLoadedRoutes.foldLeft[Route](reject)(_ ~ _) ~ r ~ afterLoadedRoutes.foldLeft[Route](reject)(_ ~ _)
   }
-
-  val interface: String = ConfigService.getString("dev.quadstingray.quarz-manager.interface")
-  val port: Int         = ConfigService.getInt("dev.quadstingray.quarz-manager.port")
 
   def startServer(): Future[Unit] = {
     beforeServerStartCallBacks.foreach(
