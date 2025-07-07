@@ -1,7 +1,7 @@
 package dev.quadstingray.quartz.manager.api.routes.docs
 
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
-import dev.quadstingray.quartz.manager.api.BuildInfo
+import dev.quadstingray.quartz.manager.api.service.ConfigService
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Future
 import sttp.apispec.openapi.circe.yaml.RichOpenAPI
@@ -15,8 +15,8 @@ import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.swagger.SwaggerUI
 import sttp.tapir.swagger.SwaggerUIOptions
 
-object ApiDocsRoutes extends CirceSchema with SchemaDerivation {
-  val nameOpenApiDocsYamlName = "docs.yaml"
+class ApiDocsRoutes(apiName: String, apiVersion: String) extends CirceSchema with SchemaDerivation {
+  val nameOpenApiDocsYamlName = ConfigService.getString("dev.quadstingray.quarz-manager.open.api.yaml")
 
   def docsYamlEndpoint(yamlName: String, content: String): ServerEndpoint[PekkoStreams with WebSockets, Future] = {
     def contentToResponse(): Future[Either[Unit, (String, Long)]] = {
@@ -44,22 +44,28 @@ object ApiDocsRoutes extends CirceSchema with SchemaDerivation {
   def addDocsRoutes(serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]]): List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
     val docs = ArrayBuffer[ServerEndpoint[PekkoStreams with WebSockets, Future]]()
 
-    val swaggerEnabled = isSwaggerEnabled
-    if (swaggerEnabled) {
-      val openApiDocs = OpenAPIDocsInterpreter().toOpenAPI(serverEndpoints.map(_.endpoint), BuildInfo.name, BuildInfo.version)
+    if (isOpenApiEnabled) {
+      val openApiDocs = OpenAPIDocsInterpreter().toOpenAPI(serverEndpoints.map(_.endpoint), apiName, apiVersion)
 
       val openApiYml: String = openApiDocs.toYaml
 
-      if (swaggerEnabled) {
+      if (isSwaggerEnabled) {
         val swaggerUIRoute =
           SwaggerUI[Future](
             openApiYml,
-            SwaggerUIOptions(List("docs"), nameOpenApiDocsYamlName, List(), useRelativePaths = true, showExtensions = false, None, None)
+            SwaggerUIOptions(
+              List(ConfigService.getString("dev.quadstingray.quarz-manager.open.api.path")),
+              nameOpenApiDocsYamlName,
+              List(),
+              useRelativePaths = true,
+              showExtensions = false,
+              None,
+              None
+            )
           )
         docs ++= swaggerUIRoute
       }
-
-      if (!swaggerEnabled) {
+      else {
         docs += docsYamlEndpoint(nameOpenApiDocsYamlName, openApiYml)
       }
     }
@@ -67,7 +73,11 @@ object ApiDocsRoutes extends CirceSchema with SchemaDerivation {
     docs.toList
   }
 
+  def isOpenApiEnabled: Boolean = {
+    ConfigService.getBoolean("dev.quadstingray.quarz-manager.open.api.enabled")
+  }
+
   def isSwaggerEnabled: Boolean = {
-    true // todo
+    ConfigService.getBoolean("dev.quadstingray.quarz-manager.swagger.enabled")
   }
 }
