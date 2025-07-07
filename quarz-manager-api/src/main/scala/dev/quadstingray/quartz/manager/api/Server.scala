@@ -28,7 +28,9 @@ class Server(
   classGraphService: ClassGraphService = new ClassGraphService(),
   authenticationService: AuthenticationService = new DefaultAuthenticationService(),
   scheduler: Scheduler = StdSchedulerFactory.getDefaultScheduler,
-  httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter
+  httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter,
+  apiName: String = BuildInfo.name,
+  apiVersion: String = BuildInfo.version
 ) extends LazyLogging
     with RouteConcatenation {
 
@@ -52,7 +54,8 @@ class Server(
   }
 
   private def routes: Route = {
-    val internalEndPoints = ApiDocsRoutes.addDocsRoutes(serverEndpoints) ++ serverEndpoints
+    val apiDocsRoutes     = new ApiDocsRoutes(apiName, apiVersion)
+    val internalEndPoints = apiDocsRoutes.addDocsRoutes(serverEndpoints) ++ serverEndpoints
     val allEndpoints = internalEndPoints.map(
       ep => httpServerInterpreter.toRoute(ep)
     )
@@ -73,7 +76,7 @@ class Server(
       .map(
         serverBinding => {
           logger.warn("init server with interface: %s at port: %s".format(interface, port))
-          if (ApiDocsRoutes.isSwaggerEnabled) {
+          if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.open.api.enabled")) {
             logger.warn("For Swagger go to: http://%s:%s/docs".format(interface, port))
           }
           afterServerStartCallBacks.foreach(
