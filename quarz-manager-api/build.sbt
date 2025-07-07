@@ -8,6 +8,7 @@ libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"    
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-sttp-client"       % TapirVersion
+libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-files"             % TapirVersion
 
 libraryDependencies += "com.typesafe" % "config" % "1.4.3"
 
