@@ -8,12 +8,11 @@ import sttp.capabilities.pekko.PekkoStreams
 import sttp.capabilities.WebSockets
 import sttp.tapir.files.staticResourcesGetServerEndpoint
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.stringToPath
 
 object QuarzManagerUi extends LazyLogging {
   def uiRoutes: Route = {
     val resourcesEndpoint: ServerEndpoint[PekkoStreams with WebSockets, Future] = {
-      staticResourcesGetServerEndpoint(stringToPath("ui"))(getClass.getClassLoader, s"META-INF/resources/webjars/quartz-manager-ui/")
+      staticResourcesGetServerEndpoint("ui")(this.getClass.getClassLoader, "META-INF/resources/webjars/quartz-manager-ui/")
     }
     HttpServer.defaultHttpServerInterpreter.toRoute(resourcesEndpoint)
   }
