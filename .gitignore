@@ -46,3 +46,8 @@ build/
 
 ### Scala ###
 .bsp/
+
+.nuxt
+node_modules
+.output
+dist
