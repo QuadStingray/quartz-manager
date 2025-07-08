@@ -51,3 +51,4 @@ build/
 node_modules
 .output
 dist
+quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui
