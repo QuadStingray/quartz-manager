@@ -1,0 +1,19 @@
+@use 'sass:color';
+@use 'vue-sidebar-menu/src/scss/vue-sidebar-menu.scss' with (
+  $primary-color: var(--p-primary-color),
+  $base-bg: #2a2a2e,
+  $item-color: #fff,
+  $item-active-color: var(--p-primary-color),
+  $item-font-size: 14px,
+  $item-line-height: 18px,
+  $item-padding: 8px 14px,
+  $icon-height: 32px,
+  $icon-width: 32px
+);
+
+.v-sidebar-menu hr {
+  margin-bottom: 8px;
+  background-color: rgba(color.adjust(#2a2a2e, $lightness: -5%), 0.5);
+  border: 0 none;
+  height: 0.1rem;
+}
