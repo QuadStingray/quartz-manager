@@ -28,7 +28,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
 
   private val jobApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("Jobs").in("api" / "jobs")
 
-  val jobsListRoutes = jobApiBaseEndpoint
+  val jobsListEndpoint = jobApiBaseEndpoint
     .out(jsonBody[List[JobInformation]])
     .summary("Registered Jobs")
     .description("Returns the List of all registered Jobs with full information")
@@ -43,7 +43,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
         }
     }
 
-  val registerJobRoutes = jobApiBaseEndpoint
+  val registerJobEndpoint = jobApiBaseEndpoint
     .in(jsonBody[JobConfig])
     .out(jsonBody[JobInformation])
     .summary("Register Job")
@@ -51,16 +51,14 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .method(Method.PUT)
     .name("registerJob")
     .serverLogic(
-      _ => config => registerJob(config)
+      _ =>
+        config =>
+          Future {
+            Right {
+              jobService.scheduleJob(config)
+            }
+          }
     )
-
-  def registerJob(jobConfig: JobConfig): Future[Either[Unit, JobInformation]] = {
-    Future {
-      Right {
-        jobService.scheduleJob(jobConfig)
-      }
-    }
-  }
 
   lazy val jobGroupParameter =
     path[String]("jobGroup")
@@ -69,7 +67,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
       .and(path[String]("jobName").description("Name of the Job"))
 
   // https://www.freeformatter.com/cron-expression-generator-quartz.html
-  val updateJobRoutes = jobApiBaseEndpoint
+  val updateJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .in(jsonBody[JobConfig])
     .out(jsonBody[JobInformation])
@@ -78,19 +76,17 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .method(Method.PATCH)
     .name("updateJob")
     .serverLogic(
-      _ => parameter => updateJob(parameter)
+      _ =>
+        parameter =>
+          Future {
+            Right {
+              jobService.removeJobFromScheduler(parameter._1, parameter._2)
+              jobService.scheduleJob(parameter._3)
+            }
+          }
     )
 
-  def updateJob(parameter: (String, String, JobConfig)): Future[Either[Unit, JobInformation]] = {
-    Future {
-      Right {
-        jobService.removeJobFromScheduler(parameter._1, parameter._2)
-        jobService.scheduleJob(parameter._3)
-      }
-    }
-  }
-
-  val deleteJobRoutes = jobApiBaseEndpoint
+  val deleteJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .out(statusCode(StatusCode.NoContent).description("Job deleted"))
     .summary("Delete Job")
@@ -98,18 +94,16 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .method(Method.DELETE)
     .name("deleteJob")
     .serverLogic(
-      _ => parameter => deleteJob(parameter)
+      _ =>
+        parameter =>
+          Future {
+            Right {
+              jobService.removeJobFromScheduler(parameter._1, parameter._2)
+            }
+          }
     )
 
-  def deleteJob(parameter: (String, String)): Future[Either[Unit, Unit]] = {
-    Future {
-      Right {
-        jobService.removeJobFromScheduler(parameter._1, parameter._2)
-      }
-    }
-  }
-
-  val jobClassesRoutes = jobApiBaseEndpoint
+  val jobClassesEndpoint = jobApiBaseEndpoint
     .in("classes")
     .out(jsonBody[List[String]])
     .summary("Possible Jobs")
@@ -117,23 +111,21 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .method(Method.GET)
     .name("possibleJobsList")
     .serverLogic(
-      _ => _ => jobClassesList()
+      _ =>
+        _ =>
+          Future {
+            Right {
+              classGraphService
+                .getSubClassesList(classOf[Job])
+                .filter(
+                  cI => !cI.isAbstract && !cI.isInterface
+                )
+                .map(_.getName)
+            }
+          }
     )
 
-  def jobClassesList(): Future[Either[Unit, List[String]]] = {
-    Future {
-      Right {
-        classGraphService
-          .getSubClassesList(classOf[Job])
-          .filter(
-            cI => !cI.isAbstract && !cI.isInterface
-          )
-          .map(_.getName)
-      }
-    }
-  }
-
-  val executeJobRoutes = jobApiBaseEndpoint
+  val executeJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .in(jsonBody[Option[Map[String, Any]]].description("Job Data map"))
     .out(statusCode(StatusCode.NoContent).description("Job added to trigger"))
@@ -142,19 +134,17 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .method(Method.POST)
     .name("executeJob")
     .serverLogic(
-      _ => parameter => executeJob(parameter)
+      _ =>
+        parameter =>
+          Future {
+            Right {
+              jobService.executeJob(parameter._1, parameter._2, parameter._3)
+            }
+          }
     )
 
-  def executeJob(parameter: (String, String, Option[Map[String, Any]])): Future[Either[Unit, Unit]] = {
-    Future {
-      Right {
-        jobService.executeJob(parameter._1, parameter._2, parameter._3)
-      }
-    }
-  }
-
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
-    List(jobsListRoutes, registerJobRoutes, updateJobRoutes, deleteJobRoutes, executeJobRoutes, jobClassesRoutes)
+    List(jobsListEndpoint, registerJobEndpoint, updateJobEndpoint, deleteJobEndpoint, executeJobEndpoint, jobClassesEndpoint)
   }
 
 }

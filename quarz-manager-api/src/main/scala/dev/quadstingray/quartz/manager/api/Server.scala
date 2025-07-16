@@ -2,6 +2,7 @@ package dev.quadstingray.quartz.manager.api
 
 import com.typesafe.scalalogging.LazyLogging
 import dev.quadstingray.quartz.manager.api.routes.docs.ApiDocsRoutes
+import dev.quadstingray.quartz.manager.api.routes.AuthRoutes
 import dev.quadstingray.quartz.manager.api.routes.HistoryRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
 import dev.quadstingray.quartz.manager.api.routes.SchedulerRoutes
@@ -26,11 +27,9 @@ import sttp.tapir.server.ServerEndpoint
 
 class Server(
   classGraphService: ClassGraphService = new ClassGraphService(),
-  authenticationService: AuthenticationService = new DefaultAuthenticationService(),
+  authenticationService: AuthenticationService = DefaultAuthenticationService(BuildInfo.name, BuildInfo.version),
   scheduler: Scheduler = StdSchedulerFactory.getDefaultScheduler,
-  httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter,
-  apiName: String = BuildInfo.name,
-  apiVersion: String = BuildInfo.version
+  httpServerInterpreter: PekkoHttpServerInterpreter = HttpServer.defaultHttpServerInterpreter
 ) extends LazyLogging
     with RouteConcatenation {
 
@@ -48,13 +47,12 @@ class Server(
   private var shutdownStarted: Boolean                                 = false
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
-    new SchedulerRoutes(authenticationService, scheduler).endpoints ++
-      new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++
-      new HistoryRoutes(authenticationService).endpoints
+    new AuthRoutes(authenticationService).endpoints ++ new SchedulerRoutes(authenticationService, scheduler).endpoints ++
+      new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++ new HistoryRoutes(authenticationService).endpoints
   }
 
   private def routes: Route = {
-    val apiDocsRoutes     = new ApiDocsRoutes(apiName, apiVersion)
+    val apiDocsRoutes     = new ApiDocsRoutes(authenticationService.name, authenticationService.version)
     val internalEndPoints = apiDocsRoutes.addDocsRoutes(serverEndpoints) ++ serverEndpoints
     val allEndpoints = internalEndPoints.map(
       ep => httpServerInterpreter.toRoute(ep)
