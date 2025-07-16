@@ -20,7 +20,7 @@ class HistoryRoutes(authenticationService: AuthenticationService) extends CirceS
 
   private val historyApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("History").in("api" / "history")
 
-  val historyListRoutes = historyApiBaseEndpoint
+  val historyListEndpoint = historyApiBaseEndpoint
     .out(jsonBody[List[LogRecord]])
     .summary("Jobs History")
     .description("Returns the List of all Jobs History with full information")
@@ -36,6 +36,6 @@ class HistoryRoutes(authenticationService: AuthenticationService) extends CirceS
     }
 
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
-    List(historyListRoutes)
+    List(historyListEndpoint)
   }
 }

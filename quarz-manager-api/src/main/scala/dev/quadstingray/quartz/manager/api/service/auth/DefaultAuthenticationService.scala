@@ -1,23 +1,38 @@
 package dev.quadstingray.quartz.manager.api.service.auth
+import dev.quadstingray.quartz.manager.api.model.Error
+import dev.quadstingray.quartz.manager.api.model.ErrorResponse
 import dev.quadstingray.quartz.manager.api.model.UserInformation
 import dev.quadstingray.quartz.manager.api.service.ConfigService
+import scala.jdk.CollectionConverters._
+import sttp.model.StatusCode
 import sttp.tapir.model.UsernamePassword
 
-class DefaultAuthenticationService extends AuthenticationService {
+case class DefaultAuthenticationService(name: String, version: String) extends AuthenticationService {
 
-  private lazy val userName: String = ConfigService.getString("dev.quadstingray.quarz-manager.auth.default.username")
-  private lazy val password: String = ConfigService.getString("dev.quadstingray.quarz-manager.auth.default.password")
+  private lazy val userList: List[UserInformation] = ConfigService
+    .getStringList("dev.quadstingray.quarz-manager.auth.users")
+    .asScala
+    .map(
+      s => {
+        val parts = s.split(":")
+        UserInformation(parts.head, Some(parts.last), None)
+      }
+    )
+    .toList
 
-  def authenticateWithBearer(bearer: String): Either[Unit, UserInformation] = {
-    Left()
-  }
-
-  def authenticate(basicAuth: UsernamePassword): Either[Unit, UserInformation] = {
-    if (basicAuth.username == userName && basicAuth.password.getOrElse("no_pwd") == password) {
-      Right(UserInformation(userName))
+  def authenticate(basicAuth: UsernamePassword): Either[Error, UserInformation] = {
+    val userOption = userList.find(_.name.equals(basicAuth.username))
+    if (userOption.isEmpty) {
+      Left(notAuthorizedError)
     }
     else {
-      Left()
+      if (userOption.get.password.isDefined && basicAuth.password.equals(userOption.get.password)) {
+        Right(userOption.get)
+      }
+      else {
+        Left(notAuthorizedError)
+      }
     }
   }
+
 }
