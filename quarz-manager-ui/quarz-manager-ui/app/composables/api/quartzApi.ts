@@ -9,6 +9,7 @@ import {useQuartzUrl} from "~/composables/api/quartzUrl";
 
 export function useQuartzApi() {
     const url = useQuartzUrl()
+    const cookieKey = 'authToken'
 
     const token = () => new Promise<string>((resolve) => {
         const cookie = useCookie(cookieKey).value
@@ -19,8 +20,7 @@ export function useQuartzApi() {
         return resolve(`${token}`)
     })
 
-    let configuration =  new Configuration({basePath: url, accessToken: token})
-    const cookieKey = 'authToken'
+    let configuration = new Configuration({basePath: url, accessToken: token})
 
     const authApi = new AuthApi(configuration)
     const historyApi = new HistoryApi(configuration)

@@ -1,7 +1,14 @@
 <script setup lang="ts">
-function redirectToGithub() {
-  window.open('https://github.com/sfxcode/nuxt3-primevue-starter', '_blank')
-}
+import { useTokenManager } from '~/composables/auth/useTokenManager';
+import { useRouter } from 'vue-router';
+
+const tokenManager = useTokenManager();
+const router = useRouter();
+
+const logout = () => {
+  tokenManager.clearToken();
+  router.push('/login');
+};
 </script>
 
 <template>
@@ -13,7 +20,13 @@ function redirectToGithub() {
 
       <template #end>
         <AppColorMode class="ml-6 mr-2" />
-        <Button icon="pi pi-sign-out" severity="danger" />
+        <Button 
+          icon="pi pi-sign-out" 
+          severity="danger" 
+          @click="logout" 
+          tooltip="Logout" 
+          tooltipPosition="bottom"
+        />
       </template>
     </Toolbar>
   </nav>
