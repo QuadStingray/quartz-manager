@@ -15,6 +15,15 @@
           "jsonLibrary": "circe",
           "dateLibrary": "joda"
         }
+      },
+      "ui-api-generator": {
+        "generatorName": "typescript-fetch",
+        "output": "./quarz-manager-ui/quarz-manager-ui/app/api",
+        "inputSpec": "http://0.0.0.0:8080/docs/docs.yaml",
+        "additionalProperties": {
+          "typescriptThreePlus": "true",
+          "supportsES6": "true"
+        }
       }
     }
   }

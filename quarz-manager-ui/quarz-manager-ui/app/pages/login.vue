@@ -4,6 +4,8 @@ const { d, t, n, locale, locales, setLocale } = useI18n()
 
 const { authApi } = useQuartzApi()
 
+authApi.login('admin', 'pwd').then((r) => console.log(r))
+
 authApi.checkToken().catch((e) => {
   if (e.response.status === 401) {
     useRouter().push('/login')

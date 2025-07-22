@@ -52,3 +52,5 @@ node_modules
 .output
 dist
 quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui
+quarz-manager-ui/quarz-manager-ui/app/api/.openapi-generator-ignore
+quarz-manager-ui/quarz-manager-ui/app/api/.openapi-generator
