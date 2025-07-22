@@ -27,6 +27,9 @@ export default defineNuxtConfig({
       APP_NAME: pkg.name,
       // eslint-disable-next-line node/prefer-global/process
       APP_MODE: process.env?.NODE_ENV,
+      quartz: {
+        url: 'http://localhost:8080'
+      },
     },
   },
 
@@ -92,6 +95,5 @@ export default defineNuxtConfig({
       exclude: [...wrappedPrimeInputs, 'Button', 'Form', 'FormField', 'Chart'],
     },
 
-  },
-
+  }
 })
