@@ -1,5 +1,10 @@
 <script lang="ts" setup>
+import {JobsApi} from "~/api";
+import {useQuartzApi} from "~/composables/api/quartzApi";
+
 const { d, t, n, locale, locales, setLocale } = useI18n()
+
+const { jobsApi } = useQuartzApi()
 
 </script>
 
