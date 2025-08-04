@@ -5,7 +5,7 @@ import org.quartz.JobExecutionContext
 
 class SampleJob extends HistoryJob {
 
-  override def execute(context: JobExecutionContext): Unit = {
+  override def executeJob(context: JobExecutionContext): Unit = {
     addToLog("Hello Sample Job")
     addToLog("Error", Level.ERROR)
     addToLog("Bllu", Level.DEBUG)
