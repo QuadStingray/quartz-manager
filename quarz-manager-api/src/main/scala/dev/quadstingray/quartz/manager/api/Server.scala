@@ -1,8 +1,7 @@
 package dev.quadstingray.quartz.manager.api
 
 import com.typesafe.scalalogging.LazyLogging
-import dev.quadstingray.quartz.manager.api.routes.docs.ApiDocsRoutes
-import dev.quadstingray.quartz.manager.api.routes.AuthRoutes
+import dev.quadstingray.quartz.manager.api.routes.{ApiDocsRoutes, AuthRoutes}
 import dev.quadstingray.quartz.manager.api.routes.HistoryRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
 import dev.quadstingray.quartz.manager.api.routes.SchedulerRoutes
