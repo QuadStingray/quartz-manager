@@ -1,19 +1,19 @@
-package dev.quadstingray.quartz.manager.api.routes.docs
+package dev.quadstingray.quartz.manager.api.routes
 
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.service.ConfigService
-import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Future
 import sttp.apispec.openapi.circe.yaml.RichOpenAPI
-import sttp.capabilities.pekko.PekkoStreams
 import sttp.capabilities.WebSockets
+import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.Method
 import sttp.tapir._
 import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
 import sttp.tapir.generic.auto.SchemaDerivation
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.swagger.SwaggerUI
-import sttp.tapir.swagger.SwaggerUIOptions
+import sttp.tapir.swagger.{SwaggerUI, SwaggerUIOptions}
+
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Future
 
 class ApiDocsRoutes(apiName: String, apiVersion: String) extends CirceSchema with SchemaDerivation {
   val nameOpenApiDocsYamlName = ConfigService.getString("dev.quadstingray.quarz-manager.open.api.yaml")
