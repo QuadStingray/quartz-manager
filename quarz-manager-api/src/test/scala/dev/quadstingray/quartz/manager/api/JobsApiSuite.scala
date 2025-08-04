@@ -13,22 +13,29 @@ class JobsApiSuite extends BaseServerSuite {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val response = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "admin", None)(
-        JobConfig(
-          name = "jobForTesting",
-          className = "dev.quadstingray.quartz.manager.SampleJob",
-          cronExpression = "0 0 0 ? * * 2088",
-          group = "testGroup",
-          priority = 0
-        )
+    (0 to 20)
+      .foreach(
+        i => {
+          val response = TestAdditions.backend.send(
+            JobsApi().registerJob("admin", "pwd", None)(
+              JobConfig(
+                name = "jobForTesting" + i,
+                className = "dev.quadstingray.quartz.manager.SampleJob",
+                cronExpression = "0 0 0 ? * * 2088",
+                group = "testGroup",
+                priority = 0
+              )
+            )
+          )
+
+          assert(response.isSuccess)
+        }
       )
-    )
-    assert(response.isSuccess)
+    while (true) {}
   }
 
   test("List all possible jobs") {
-    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("admin", "admin", None))
+    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("admin", "pwd", None))
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
@@ -38,7 +45,7 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("Register a new job") {
     val response = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "admin", None)(
+      JobsApi().registerJob("admin", "pwd", None)(
         JobConfig(
           name = "mySampleJob",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -71,7 +78,7 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("Register a job with invalid cron expression".ignore) {
     val response = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "admin", None)(
+      JobsApi().registerJob("admin", "pwd", None)(
         JobConfig(
           name = "invalidCronJob",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -85,7 +92,7 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all registered jobs") {
-    val response = TestAdditions.backend.send(JobsApi().jobsList("admin", "admin", None))
+    val response = TestAdditions.backend.send(JobsApi().jobsList("admin", "pwd", None))
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
@@ -96,9 +103,9 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("Update an existing job") {
     val response = TestAdditions.backend.send(
-      JobsApi().updateJob("admin", "admin", None)(
+      JobsApi().updateJob("admin", "pwd", None)(
         "testGroup",
-        "jobForTesting",
+        "jobForTesting0",
         JobConfig(
           name = "jobForTesting",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -129,16 +136,16 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("Trigger an existing job") {
-    val request  = JobsApi().executeJob("admin", "admin", None)("testGroup", "jobForTesting", Map.empty)
+    val request  = JobsApi().executeJob("admin", "pwd", None)("testGroup", "jobForTesting", Map.empty)
     val response = TestAdditions.backend.send(request)
     assert(response.isSuccess)
   }
 
   test("Delete an existing job") {
-    val response = TestAdditions.backend.send(JobsApi().deleteJob("admin", "admin", None)("testGroup", "jobForTesting"))
+    val response = TestAdditions.backend.send(JobsApi().deleteJob("admin", "pwd", None)("testGroup", "jobForTesting"))
     assert(response.isSuccess)
     jobsRegistered -= 1
-    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("admin", "admin", None))
+    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("admin", "pwd", None))
     assert(listResponse.isSuccess)
     val value = listResponse.body.getOrElse {
       throw new Exception(listResponse.body.left.get.getMessage)
