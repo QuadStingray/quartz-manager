@@ -6,6 +6,7 @@ import java.lang.System.Logger.Level
 import java.util.Date
 import java.util.UUID
 import org.quartz.Job
+import org.quartz.JobExecutionContext
 
 abstract class HistoryJob extends Job {
 
@@ -14,6 +15,14 @@ abstract class HistoryJob extends Job {
   def addToLog(logMessage: String, level: Level = Level.INFO): Unit = {
     HistoryService.addToLog(id, this.getClass.getName, LogMessage(new Date(), level.toString, logMessage))
   }
+
+  override def execute(context: JobExecutionContext): Unit = {
+    addToLog(s"Job `${this.getClass.getSimpleName}` execution started", Level.INFO)
+    executeJob(context)
+    addToLog(s"Job `${this.getClass.getSimpleName}` execution finished", Level.INFO)
+  }
+
+  def executeJob(context: JobExecutionContext): Unit
 
   addToLog(s"${getClass.getSimpleName} is instantiated", Level.DEBUG)
 
