@@ -1,11 +1,8 @@
 package dev.quadstingray.quartz.manager.api.routes
 
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
-import dev.quadstingray.quartz.manager.api.model.LogRecord
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
-import dev.quadstingray.quartz.manager.api.service.HistoryService
 import dev.quadstingray.quartz.manager.api.ActorHandler
-import io.circe.generic.auto._
 import org.quartz.Scheduler
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -14,8 +11,6 @@ import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.Method
 import sttp.model.StatusCode
 import sttp.tapir._
-import sttp.tapir.generic.auto._
-import sttp.tapir.json.circe.jsonBody
 import sttp.tapir.server.ServerEndpoint
 
 class SchedulerRoutes(authenticationService: AuthenticationService, scheduler: Scheduler) extends CirceSchema {

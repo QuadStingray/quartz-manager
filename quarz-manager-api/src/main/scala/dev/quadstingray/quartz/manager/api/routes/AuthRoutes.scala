@@ -1,12 +1,14 @@
 package dev.quadstingray.quartz.manager.api.routes
 
-import dev.quadstingray.quartz.manager.api.ActorHandler
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
-import dev.quadstingray.quartz.manager.api.model.UserInformation
 import dev.quadstingray.quartz.manager.api.model.auth.TokenResponse
-import dev.quadstingray.quartz.manager.api.service.ConfigService
+import dev.quadstingray.quartz.manager.api.model.UserInformation
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
+import dev.quadstingray.quartz.manager.api.service.ConfigService
+import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
 import sttp.capabilities
 import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.Method
@@ -15,12 +17,10 @@ import sttp.tapir.generic.auto._
 import sttp.tapir.json.circe.jsonBody
 import sttp.tapir.server.ServerEndpoint
 
-import scala.concurrent.{ExecutionContext, Future}
-
 class AuthRoutes(authenticationService: AuthenticationService) extends CirceSchema {
   implicit val ex: ExecutionContext = ActorHandler.requestExecutionContext
 
-  val loginEndpoint = authenticationService.basicEndpointDefinition
+  private val loginEndpoint = authenticationService.basicEndpointDefinition
     .tag("Auth")
     .in("api" / "auth")
     .in("login")
@@ -40,7 +40,7 @@ class AuthRoutes(authenticationService: AuthenticationService) extends CirceSche
         }
     }
 
-  val checkTokenEndpoint = authenticationService.bearerEndpointDefinition
+  private val checkTokenEndpoint = authenticationService.bearerEndpointDefinition
     .tag("Auth")
     .in("api" / "auth")
     .in("token")
@@ -66,7 +66,7 @@ class AuthRoutes(authenticationService: AuthenticationService) extends CirceSche
         }
     }
 
-  val extendTokenEndpoint = authenticationService.bearerEndpointDefinition
+  private val extendTokenEndpoint = authenticationService.bearerEndpointDefinition
     .tag("Auth")
     .in("api" / "auth")
     .in("token")

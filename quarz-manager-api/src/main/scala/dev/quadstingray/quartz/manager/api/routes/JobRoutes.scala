@@ -10,13 +10,7 @@ import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
-import org.quartz.Job
-import org.quartz.JobBuilder
-import org.quartz.JobDataMap
-import org.quartz.JobKey
-import org.quartz.Scheduler
-import org.quartz.SimpleScheduleBuilder
-import org.quartz.TriggerBuilder
+import org.quartz._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters._
@@ -36,7 +30,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
 
   private val jobApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("Jobs").in("api" / "jobs")
 
-  val jobsListEndpoint = jobApiBaseEndpoint
+  private val jobsListEndpoint = jobApiBaseEndpoint
     .out(jsonBody[List[JobInformation]])
     .summary("Registered Jobs")
     .description("Returns the List of all registered Jobs with full information")
@@ -51,7 +45,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
         }
     }
 
-  val registerJobEndpoint = jobApiBaseEndpoint
+  private val registerJobEndpoint = jobApiBaseEndpoint
     .in(jsonBody[JobConfig])
     .out(jsonBody[JobInformation])
     .summary("Register Job")
@@ -68,14 +62,14 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
           }
     )
 
-  lazy val jobGroupParameter =
+  private lazy val jobGroupParameter =
     path[String]("jobGroup")
       .description("Group Name of the Job")
       .default(ModelConstants.jobDefaultGroup)
       .and(path[String]("jobName").description("Name of the Job"))
 
   // https://www.freeformatter.com/cron-expression-generator-quartz.html
-  val updateJobEndpoint = jobApiBaseEndpoint
+  private val updateJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .in(jsonBody[JobConfig])
     .out(jsonBody[JobInformation])
@@ -94,7 +88,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
           }
     )
 
-  val deleteJobEndpoint = jobApiBaseEndpoint
+  private val deleteJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .out(statusCode(StatusCode.NoContent).description("Job deleted"))
     .summary("Delete Job")
@@ -111,7 +105,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
           }
     )
 
-  val jobClassesEndpoint = jobApiBaseEndpoint
+  private val jobClassesEndpoint = jobApiBaseEndpoint
     .in("classes")
     .out(jsonBody[List[String]])
     .summary("Possible Jobs")
@@ -133,7 +127,7 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
           }
     )
 
-  val executeJobEndpoint = jobApiBaseEndpoint
+  private val executeJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
     .in(jsonBody[Option[Map[String, Any]]].description("Job Data map"))
     .out(statusCode(StatusCode.NoContent).description("Job added to trigger"))
