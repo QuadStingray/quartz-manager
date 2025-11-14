@@ -8,8 +8,10 @@ package dev.quadstingray.quartz.manager.client.api
 
 import dev.quadstingray.quartz.manager.TestAdditions
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
+import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.client.model.JobConfig
 import dev.quadstingray.quartz.manager.client.model.JobInformation
+import dev.quadstingray.quartz.manager.client.model.TriggerConfig
 import sttp.client3._
 import sttp.model.Method
 
@@ -21,7 +23,7 @@ class JobsApi(baseUrl: String) {
 
   /** Delete Job and reload all Job Information
     *
-    * Expected answers: code 204 : (Job deleted)
+    * Expected answers: code 204 : (Job deleted) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     *
@@ -51,7 +53,7 @@ class JobsApi(baseUrl: String) {
 
   /** Execute scheduled Job manually
     *
-    * Expected answers: code 204 : (Job added to trigger) code 400 : String (Invalid value for: body)
+    * Expected answers: code 204 : (Job added to trigger) code 400 : String (Invalid value for: body) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     *
@@ -85,11 +87,12 @@ class JobsApi(baseUrl: String) {
 
   /** Returns the List of all registered Jobs with full information
     *
-    * Expected answers: code 200 : Seq[JobInformation] ()
+    * Expected answers: code 200 : Seq[JobInformation] () code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def jobsList(username: String, password: String, bearerToken: Option[String])() =
+  def jobsList(username: String, password: String, bearerToken: Option[String])(
+  ): Request[Either[ResponseException[String, Exception], Seq[JobInformation]], Any] =
     basicRequest
       .method(Method.GET, uri"$baseUrl/api/jobs")
       .contentType("application/json")
@@ -101,7 +104,7 @@ class JobsApi(baseUrl: String) {
 
   /** Returns the List of possible job classes
     *
-    * Expected answers: code 200 : Seq[String] ()
+    * Expected answers: code 200 : Seq[String] () code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
@@ -118,7 +121,7 @@ class JobsApi(baseUrl: String) {
 
   /** Register an Job and return the JobInformation with next schedule information
     *
-    * Expected answers: code 200 : JobInformation () code 400 : String (Invalid value for: body)
+    * Expected answers: code 200 : JobInformation () code 400 : String (Invalid value for: body) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     *
@@ -137,9 +140,36 @@ class JobsApi(baseUrl: String) {
       .body(jobConfig)
       .response(asJson[JobInformation])
 
+  /** Register an Trigger to schedule a Job only one time.
+    *
+    * Expected answers: code 204 : (Trigger added) code 400 : String (Invalid value for: body) code 0 : ErrorResponse ()
+    *
+    * Available security schemes: httpAuth1 (http) httpAuth (http)
+    *
+    * @param triggerConfig
+    */
+  def registerTrigger(username: String, password: String, bearerToken: Option[String])(
+    triggerConfig: TriggerConfig
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] =
+    basicRequest
+      .method(Method.POST, uri"$baseUrl/api/jobs")
+      .contentType("application/json")
+      .auth
+      .basic(username, password)
+      .auth
+      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
+      .body(triggerConfig)
+      .response(
+        asString.mapWithMetadata(
+          ResponseAs.deserializeRightWithError(
+            _ => Right(())
+          )
+        )
+      )
+
   /** Add Job and get JobInformation back
     *
-    * Expected answers: code 200 : JobInformation () code 400 : String (Invalid value for: body)
+    * Expected answers: code 200 : JobInformation () code 400 : String (Invalid value for: body) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     *
@@ -152,7 +182,7 @@ class JobsApi(baseUrl: String) {
   def updateJob(
     username: String,
     password: String,
-    bearerToken:  Option[String]
+    bearerToken: Option[String]
   )(jobGroup: String, jobName: String, jobConfig: JobConfig): Request[Either[ResponseException[String, Exception], JobInformation], Any] =
     basicRequest
       .method(Method.PATCH, uri"$baseUrl/api/jobs/${jobGroup}/${jobName}")

@@ -6,7 +6,6 @@
   */
 package dev.quadstingray.quartz.manager.client.api
 
-import dev.quadstingray.quartz.manager.client.core.JsonSupport._
 import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
@@ -19,7 +18,7 @@ class SchedulerApi(baseUrl: String) {
 
   /** Shutdown the Quartz Scheduler
     *
-    * Expected answers: code 204 : (Scheduler shutdown) code 400 : String (Invalid value for: query parameter waitForJobsToComplete)
+    * Expected answers: code 204 : (Scheduler shutdown) code 400 : String (Invalid value for: query parameter waitForJobsToComplete) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     *
@@ -43,7 +42,7 @@ class SchedulerApi(baseUrl: String) {
 
   /** Standby the Quartz Scheduler
     *
-    * Expected answers: code 204 : (Scheduler standby)
+    * Expected answers: code 204 : (Scheduler standby) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
@@ -65,7 +64,7 @@ class SchedulerApi(baseUrl: String) {
 
   /** Start the Quartz Scheduler
     *
-    * Expected answers: code 204 : (Scheduler started)
+    * Expected answers: code 204 : (Scheduler started) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */

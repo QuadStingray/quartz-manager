@@ -8,6 +8,7 @@ package dev.quadstingray.quartz.manager.client.api
 
 import dev.quadstingray.quartz.manager.TestAdditions
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
+import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.client.model.LogRecord
 import sttp.client3._
 import sttp.model.Method
@@ -20,11 +21,15 @@ class HistoryApi(baseUrl: String) {
 
   /** Returns the List of all Jobs History with full information
     *
-    * Expected answers: code 200 : Seq[LogRecord] ()
+    * Expected answers: code 200 : Seq[LogRecord] () code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def historyList(username: String, password: String, bearerToken: Option[String])(): Request[Either[ResponseException[String, Exception], Seq[LogRecord]], Any] =
+  def historyList(
+    username: String,
+    password: String,
+    bearerToken: Option[String]
+  )(): Request[Either[ResponseException[String, Exception], Seq[LogRecord]], Any] =
     basicRequest
       .method(Method.GET, uri"$baseUrl/api/history")
       .contentType("application/json")
