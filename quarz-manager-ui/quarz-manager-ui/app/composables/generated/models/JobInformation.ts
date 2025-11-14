@@ -57,6 +57,12 @@ export interface JobInformation {
     priority: number;
     /**
      * 
+     * @type {{ [key: string]: string; }}
+     * @memberof JobInformation
+     */
+    jobDataMap: { [key: string]: string; };
+    /**
+     * 
      * @type {Date}
      * @memberof JobInformation
      */
@@ -84,6 +90,7 @@ export function instanceOfJobInformation(value: object): value is JobInformation
     if (!('jobClassName' in value) || value['jobClassName'] === undefined) return false;
     if (!('cronExpression' in value) || value['cronExpression'] === undefined) return false;
     if (!('priority' in value) || value['priority'] === undefined) return false;
+    if (!('jobDataMap' in value) || value['jobDataMap'] === undefined) return false;
     return true;
 }
 
@@ -103,6 +110,7 @@ export function JobInformationFromJSONTyped(json: any, ignoreDiscriminator: bool
         'description': json['description'] == null ? undefined : json['description'],
         'cronExpression': json['cronExpression'],
         'priority': json['priority'],
+        'jobDataMap': json['jobDataMap'],
         'lastScheduledFireTime': json['lastScheduledFireTime'] == null ? undefined : (new Date(json['lastScheduledFireTime'])),
         'nextScheduledFireTime': json['nextScheduledFireTime'] == null ? undefined : (new Date(json['nextScheduledFireTime'])),
         'scheduleInformation': json['scheduleInformation'] == null ? undefined : json['scheduleInformation'],
@@ -126,6 +134,7 @@ export function JobInformationToJSONTyped(value?: JobInformation | null, ignoreD
         'description': value['description'],
         'cronExpression': value['cronExpression'],
         'priority': value['priority'],
+        'jobDataMap': value['jobDataMap'],
         'lastScheduledFireTime': value['lastScheduledFireTime'] == null ? undefined : ((value['lastScheduledFireTime']).toISOString()),
         'nextScheduledFireTime': value['nextScheduledFireTime'] == null ? undefined : ((value['nextScheduledFireTime']).toISOString()),
         'scheduleInformation': value['scheduleInformation'],

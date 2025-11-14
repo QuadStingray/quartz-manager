@@ -6,3 +6,4 @@ export * from './JobInformation';
 export * from './LogMessage';
 export * from './LogRecord';
 export * from './TokenResponse';
+export * from './TriggerConfig';
