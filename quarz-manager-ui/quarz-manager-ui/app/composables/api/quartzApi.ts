@@ -1,10 +1,10 @@
 import {useCookie} from '#app'
 import {useSessionStorage} from '@vueuse/core'
-import {Configuration} from '~/api'
-import {AuthApi} from '~/api/apis/AuthApi'
-import {HistoryApi} from '~/api/apis/HistoryApi'
-import {JobsApi} from '~/api/apis/JobsApi'
-import {SchedulerApi} from '~/api/apis/SchedulerApi'
+import {Configuration} from '~/composables/generated'
+import {AuthApi} from '~/composables/generated/apis/AuthApi'
+import {HistoryApi} from '~/composables/generated/apis/HistoryApi'
+import {JobsApi} from '~/composables/generated/apis/JobsApi'
+import {SchedulerApi} from '~/composables/generated/apis/SchedulerApi'
 import {useQuartzUrl} from "~/composables/api/quartzUrl";
 
 export function useQuartzApi() {
@@ -22,12 +22,14 @@ export function useQuartzApi() {
 
     let configuration = new Configuration({basePath: url, accessToken: token})
 
+    const loginApi = (username: string, password: string) => new AuthApi(new Configuration({basePath: url, username: username, password: password}))
     const authApi = new AuthApi(configuration)
     const historyApi = new HistoryApi(configuration)
     const jobsApi = new JobsApi(configuration)
     const schedulerApi = new SchedulerApi(configuration)
 
     return {
+        loginApi,
         authApi,
         historyApi,
         jobsApi,

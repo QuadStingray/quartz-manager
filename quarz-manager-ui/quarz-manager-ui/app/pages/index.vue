@@ -2,11 +2,14 @@
 import {useQuartzApi} from "~/composables/api/quartzApi";
 const { d, t, n, locale, locales, setLocale } = useI18n()
 
+// Capture router during setup to avoid calling composable in async context
+const router = useRouter()
+
 const { authApi } = useQuartzApi()
 
 authApi.checkToken().catch((e) => {
-  if (e.response.status === 401) {
-    useRouter().push('/login')
+  if (e.response?.status === 401) {
+    router.push('/login')
   } else {
     throw e;
   }
