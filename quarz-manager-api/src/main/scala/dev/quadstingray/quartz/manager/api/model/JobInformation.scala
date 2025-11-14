@@ -9,6 +9,7 @@ case class JobInformation(
   description: Option[String],
   cronExpression: String,
   priority: Int,
+  jobDataMap: Map[String, Any],
   lastScheduledFireTime: Option[Date],
   nextScheduledFireTime: Option[Date],
   scheduleInformation: Option[String]

@@ -21,7 +21,9 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
 
   def removeJobFromScheduler(jobGroup: String, jobName: String): Unit = {
     getTriggerList(jobGroup, jobName).foreach(
-      trigger => scheduler.unscheduleJob(trigger.getKey)
+      trigger => {
+        scheduler.unscheduleJob(trigger.getKey)
+      }
     )
     scheduler.deleteJob(new JobKey(jobName, jobGroup))
   }
@@ -47,7 +49,7 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
       else {
         jobConfig.name
       }
-      val job = newJob(jobClass).withIdentity(internalJobName, jobConfig.group).build
+      val job = newJob(jobClass).withIdentity(internalJobName, jobConfig.group).setJobData(new JobDataMap(jobConfig.jobDataMap.asJava)).build
       val trigger = newTrigger()
         .withIdentity(s"${internalJobName}Trigger", jobConfig.group)
         .withSchedule(CronScheduleBuilder.cronSchedule(jobConfig.cronExpression))
@@ -79,8 +81,8 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
     var priority: Int                = Int.MaxValue
     var triggerCron: String          = ""
     if (schedulerTriggerList.nonEmpty) {
-      nextFireTime = Option(schedulerTriggerList.map(_.getNextFireTime).min)
-      lastFireTime = Option(schedulerTriggerList.map(_.getPreviousFireTime).max)
+      nextFireTime = schedulerTriggerList.map(_.getNextFireTime).map(v => Option(v)).filter(_.nonEmpty).map(_.get).minOption
+      lastFireTime = schedulerTriggerList.map(_.getPreviousFireTime).map(v => Option(v)).filter(_.nonEmpty).map(_.get).maxOption
       priority = schedulerTriggerList.map(_.getPriority).min
       triggerCron = schedulerTriggerList.filter(_.isInstanceOf[CronTrigger]).map(_.asInstanceOf[CronTrigger].getCronExpression).headOption.getOrElse("")
     }
@@ -94,6 +96,7 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
       Option(jobDetail.getDescription).filterNot(_.trim.isEmpty),
       triggerCron,
       priority,
+      jobDetail.getJobDataMap.asScala.toMap,
       lastFireTime,
       nextFireTime,
       scheduleInfo
