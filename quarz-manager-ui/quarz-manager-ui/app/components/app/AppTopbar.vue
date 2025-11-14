@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { useTokenManager } from '~/composables/auth/useTokenManager';
 import { useRouter } from 'vue-router';
 
-const tokenManager = useTokenManager();
+const { $tokenManager } = useNuxtApp();
 const router = useRouter();
 
 const logout = () => {
-  tokenManager.clearToken();
+  $tokenManager.clearToken();
   router.push('/login');
 };
 </script>

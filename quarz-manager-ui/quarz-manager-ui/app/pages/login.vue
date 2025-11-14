@@ -2,7 +2,7 @@
 import { useQuartzApi } from "~/composables/api/quartzApi";
 import { ref } from 'vue';
 import { useCookie } from '#app';
-import { useTokenManager } from '~/composables/auth/useTokenManager';
+const { $tokenManager } = useNuxtApp();
 
 definePageMeta({
   layout: 'auth'
@@ -10,8 +10,7 @@ definePageMeta({
 
 const { d, t, n, locale, locales, setLocale } = useI18n();
 const router = useRouter();
-const { authApi } = useQuartzApi();
-const tokenManager = useTokenManager();
+const { loginApi } = useQuartzApi();
 
 // Form data
 const username = ref('');
@@ -33,7 +32,7 @@ const handleLogin = async () => {
   errorMessage.value = '';
   
   try {
-    const response = await authApi.login(username.value, password.value);
+    const response = await loginApi(username.value, password.value).login();
     
     // Store token in cookie with expiration date from response
     const authTokenCookie = useCookie('authToken', {
@@ -46,7 +45,7 @@ const handleLogin = async () => {
     authTokenCookie.value = response.authToken;
     
     // Update token manager state
-    await tokenManager.checkToken(true);
+    await $tokenManager.checkToken(true);
     
     // Redirect to home page
     router.push('/');
@@ -60,7 +59,7 @@ const handleLogin = async () => {
 
 // Check if already logged in
 onMounted(async () => {
-  const isAuthenticated = await tokenManager.checkToken();
+  const isAuthenticated = await $tokenManager.checkToken();
   if (isAuthenticated) {
     // Already logged in, redirect to home
     router.push('/');
