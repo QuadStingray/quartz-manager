@@ -6,5 +6,6 @@ case class JobConfig(
   description: Option[String],
   cronExpression: String,
   group: String = ModelConstants.jobDefaultGroup,
-  priority: Int = ModelConstants.jobDefaultPriority
+  priority: Int = ModelConstants.jobDefaultPriority,
+  jobDataMap: Map[String, Any] = Map.empty
 )

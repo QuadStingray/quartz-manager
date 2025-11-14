@@ -4,15 +4,23 @@ import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
 import dev.quadstingray.quartz.manager.api.model.ModelConstants
+import dev.quadstingray.quartz.manager.api.model.TriggerConfig
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
 import org.quartz.Job
+import org.quartz.JobBuilder
+import org.quartz.JobDataMap
+import org.quartz.JobKey
 import org.quartz.Scheduler
+import org.quartz.SimpleScheduleBuilder
+import org.quartz.TriggerBuilder
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
+import scala.util.Random
 import sttp.capabilities
 import sttp.capabilities.pekko.PekkoStreams
 import sttp.model.Method
@@ -23,8 +31,8 @@ import sttp.tapir.json.circe.jsonBody
 import sttp.tapir.server.ServerEndpoint
 
 class JobRoutes(authenticationService: AuthenticationService, classGraphService: ClassGraphService, scheduler: Scheduler) extends CirceSchema {
-  implicit val ex: ExecutionContext   = ActorHandler.requestExecutionContext
-  val jobService: JobSchedulerService = new JobSchedulerService(classGraphService, scheduler)
+  implicit val ex: ExecutionContext                = ActorHandler.requestExecutionContext
+  private lazy val jobService: JobSchedulerService = new JobSchedulerService(classGraphService, scheduler)
 
   private val jobApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("Jobs").in("api" / "jobs")
 
@@ -143,8 +151,35 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
           }
     )
 
+  private val registerTriggerRoutes = jobApiBaseEndpoint
+    .in(jsonBody[TriggerConfig])
+    .out(statusCode(StatusCode.NoContent).description("Trigger added"))
+    .summary("Add onetime Trigger")
+    .description("Register an Trigger to schedule a Job only one time.")
+    .method(Method.POST)
+    .name("registerTrigger")
+    .serverLogic {
+      _ => triggerConfig =>
+        Future {
+          Right {
+            val jobClass: Class[_ <: Job] = classGraphService.getClassByName(triggerConfig.className).asInstanceOf[Class[Job]]
+            val jobKey                    = new JobKey(Random.alphanumeric.take(10).mkString, Random.alphanumeric.take(10).mkString)
+            val trigger = TriggerBuilder.newTrigger
+              .withIdentity(jobKey.getName, jobKey.getGroup)
+              .withPriority(triggerConfig.priority)
+              .startNow
+              .withSchedule(SimpleScheduleBuilder.simpleSchedule.withRepeatCount(0))
+              .build()
+            val job = JobBuilder.newJob(jobClass).withIdentity(jobKey).usingJobData(new JobDataMap(triggerConfig.jobDataMap.asJava)).build
+            scheduler.scheduleJob(job, trigger)
+            scheduler.triggerJob(jobKey)
+            scheduler.deleteJob(jobKey)
+          }
+        }
+    }
+
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
-    List(jobsListEndpoint, registerJobEndpoint, updateJobEndpoint, deleteJobEndpoint, executeJobEndpoint, jobClassesEndpoint)
+    List(jobsListEndpoint, registerJobEndpoint, updateJobEndpoint, deleteJobEndpoint, executeJobEndpoint, jobClassesEndpoint, registerTriggerRoutes)
   }
 
 }
