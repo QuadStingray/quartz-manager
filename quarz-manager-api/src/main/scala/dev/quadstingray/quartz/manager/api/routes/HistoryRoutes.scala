@@ -20,7 +20,7 @@ class HistoryRoutes(authenticationService: AuthenticationService) extends CirceS
 
   private val historyApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("History").in("api" / "history")
 
-  val historyListEndpoint = historyApiBaseEndpoint
+  private val historyListEndpoint = historyApiBaseEndpoint
     .out(jsonBody[List[LogRecord]])
     .summary("Jobs History")
     .description("Returns the List of all Jobs History with full information")
