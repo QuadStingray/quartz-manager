@@ -1,7 +1,8 @@
 package dev.quadstingray.quartz.manager.api
 
 import com.typesafe.scalalogging.LazyLogging
-import dev.quadstingray.quartz.manager.api.routes.{ApiDocsRoutes, AuthRoutes}
+import dev.quadstingray.quartz.manager.api.routes.ApiDocsRoutes
+import dev.quadstingray.quartz.manager.api.routes.AuthRoutes
 import dev.quadstingray.quartz.manager.api.routes.HistoryRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
 import dev.quadstingray.quartz.manager.api.routes.SchedulerRoutes
@@ -47,7 +48,8 @@ class Server(
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
     new AuthRoutes(authenticationService).endpoints ++ new SchedulerRoutes(authenticationService, scheduler).endpoints ++
-      new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++ new HistoryRoutes(authenticationService).endpoints
+      new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++
+      new HistoryRoutes(authenticationService).endpoints
   }
 
   private def routes: Route = {
