@@ -18,6 +18,7 @@ import type {
   ErrorResponse,
   JobConfig,
   JobInformation,
+  TriggerConfig,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
@@ -26,6 +27,8 @@ import {
     JobConfigToJSON,
     JobInformationFromJSON,
     JobInformationToJSON,
+    TriggerConfigFromJSON,
+    TriggerConfigToJSON,
 } from '../models/index';
 
 export interface DeleteJobRequest {
@@ -41,6 +44,10 @@ export interface ExecuteJobRequest {
 
 export interface RegisterJobRequest {
     jobConfig: JobConfig;
+}
+
+export interface RegisterTriggerRequest {
+    triggerConfig: TriggerConfig;
 }
 
 export interface UpdateJobRequest {
@@ -290,6 +297,54 @@ export class JobsApi extends runtime.BaseAPI {
     async registerJob(requestParameters: RegisterJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<JobInformation> {
         const response = await this.registerJobRaw(requestParameters, initOverrides);
         return await response.value();
+    }
+
+    /**
+     * Register an Trigger to schedule a Job only one time.
+     * Add onetime Trigger
+     */
+    async registerTriggerRaw(requestParameters: RegisterTriggerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters['triggerConfig'] == null) {
+            throw new runtime.RequiredError(
+                'triggerConfig',
+                'Required parameter "triggerConfig" was null or undefined when calling registerTrigger().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("httpAuth1", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/jobs`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TriggerConfigToJSON(requestParameters['triggerConfig']),
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Register an Trigger to schedule a Job only one time.
+     * Add onetime Trigger
+     */
+    async registerTrigger(requestParameters: RegisterTriggerRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.registerTriggerRaw(requestParameters, initOverrides);
     }
 
     /**

@@ -55,6 +55,12 @@ export interface JobConfig {
      * @memberof JobConfig
      */
     priority: number;
+    /**
+     * 
+     * @type {{ [key: string]: string; }}
+     * @memberof JobConfig
+     */
+    jobDataMap: { [key: string]: string; };
 }
 
 /**
@@ -66,6 +72,7 @@ export function instanceOfJobConfig(value: object): value is JobConfig {
     if (!('cronExpression' in value) || value['cronExpression'] === undefined) return false;
     if (!('group' in value) || value['group'] === undefined) return false;
     if (!('priority' in value) || value['priority'] === undefined) return false;
+    if (!('jobDataMap' in value) || value['jobDataMap'] === undefined) return false;
     return true;
 }
 
@@ -85,6 +92,7 @@ export function JobConfigFromJSONTyped(json: any, ignoreDiscriminator: boolean):
         'cronExpression': json['cronExpression'],
         'group': json['group'],
         'priority': json['priority'],
+        'jobDataMap': json['jobDataMap'],
     };
 }
 
@@ -105,6 +113,7 @@ export function JobConfigToJSONTyped(value?: JobConfig | null, ignoreDiscriminat
         'cronExpression': value['cronExpression'],
         'group': value['group'],
         'priority': value['priority'],
+        'jobDataMap': value['jobDataMap'],
     };
 }
 

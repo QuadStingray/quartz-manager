@@ -5,25 +5,24 @@ export function useConfirmation() {
   const { showSuccessMessage, showInfoMessage } = useMessages()
 
   // eslint-disable-next-line unused-imports/no-unused-vars
-  function doNothing(id: any) {
-  }
+  function doNothing() {}
 
-  function confirmDelete(idToDelete: any, acceptCallback: (id: any) => void, rejectCallback: (id: any) => void = doNothing) {
-    confirm.require({
-      message: 'Should this entry be deleted ?',
-      header: 'Are you sure',
+    function confirmDelete(acceptCallback: () => void, rejectCallback: () => void = doNothing, acceptMessage: string = 'Action confirmed', acceptMessageDetail: string = acceptMessage, header: string = 'Are you sure', message: string = 'Should this entry be deleted ?') {
+      confirm.require({
+      message: message,
+      header: header,
       icon: 'pi pi-info-circle',
       rejectLabel: 'Cancel',
       acceptLabel: 'Delete',
       rejectClass: 'p-button-secondary p-button-outlined',
       acceptClass: 'p-button-danger',
       accept: () => {
-        showSuccessMessage('Action confirmed', `Entry with ID ${idToDelete} was deleted`)
-        acceptCallback(idToDelete)
+        acceptCallback()
+        showSuccessMessage(acceptMessage, acceptMessageDetail)
       },
       reject: () => {
+        rejectCallback()
         showInfoMessage('Action cancelled', 'No changes are processed')
-        rejectCallback(idToDelete)
       },
     })
   }
