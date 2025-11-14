@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="fullstack: nuxt" type="CompoundRunConfigurationType">
+    <toRun name="TestServer" type="Application" />
+    <toRun name="client: chrome" type="JavascriptDebugType" />
+    <toRun name="pnpm dev" type="ShConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
