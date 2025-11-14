@@ -23,15 +23,15 @@ class JobsApiSuite extends BaseServerSuite {
                 className = "dev.quadstingray.quartz.manager.SampleJob",
                 cronExpression = "0 0 0 ? * * 2088",
                 group = "testGroup",
-                priority = 0
+                priority = 0,
+                jobDataMap = Map.empty
               )
             )
           )
-
           assert(response.isSuccess)
+          jobsRegistered += 1
         }
       )
-    while (true) {}
   }
 
   test("List all possible jobs") {
@@ -51,7 +51,8 @@ class JobsApiSuite extends BaseServerSuite {
           className = "dev.quadstingray.quartz.manager.SampleJob",
           cronExpression = "0 0 0 ? * * 2099",
           group = "testGroup",
-          priority = 0
+          priority = 0,
+          jobDataMap = Map.empty
         )
       )
     )
@@ -71,7 +72,8 @@ class JobsApiSuite extends BaseServerSuite {
         description = None,
         lastScheduledFireTime = None,
         nextScheduledFireTime = Some(new DateTime("2099-01-01T00:00:00.000+01:00")),
-        scheduleInformation = None
+        scheduleInformation = None,
+        jobDataMap = Map.empty
       )
     )
   }
@@ -84,7 +86,8 @@ class JobsApiSuite extends BaseServerSuite {
           className = "dev.quadstingray.quartz.manager.SampleJob",
           cronExpression = "invalid cron expression",
           group = "testGroup",
-          priority = 0
+          priority = 0,
+          jobDataMap = Map.empty
         )
       )
     )
@@ -105,13 +108,14 @@ class JobsApiSuite extends BaseServerSuite {
     val response = TestAdditions.backend.send(
       JobsApi().updateJob("admin", "pwd", None)(
         "testGroup",
-        "jobForTesting0",
+        "jobForTesting10",
         JobConfig(
-          name = "jobForTesting",
+          name = "jobForTesting10",
           className = "dev.quadstingray.quartz.manager.SampleJob",
           cronExpression = "0 0 0 ? * * 2077",
           group = "testGroup",
-          priority = 0
+          priority = 0,
+          jobDataMap = Map.empty
         )
       )
     )
@@ -122,7 +126,7 @@ class JobsApiSuite extends BaseServerSuite {
     assertEquals(
       value,
       JobInformation(
-        name = "jobForTesting",
+        name = "jobForTesting10",
         group = "testGroup",
         jobClassName = "dev.quadstingray.quartz.manager.SampleJob",
         cronExpression = "0 0 0 ? * * 2077",
@@ -130,7 +134,8 @@ class JobsApiSuite extends BaseServerSuite {
         description = None,
         lastScheduledFireTime = None,
         nextScheduledFireTime = Some(new DateTime("2077-01-01T00:00:00.000+01:00")),
-        scheduleInformation = None
+        scheduleInformation = None,
+        jobDataMap = Map.empty
       )
     )
   }
@@ -142,7 +147,7 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("Delete an existing job") {
-    val response = TestAdditions.backend.send(JobsApi().deleteJob("admin", "pwd", None)("testGroup", "jobForTesting"))
+    val response = TestAdditions.backend.send(JobsApi().deleteJob("admin", "pwd", None)("testGroup", "jobForTesting2"))
     assert(response.isSuccess)
     jobsRegistered -= 1
     val listResponse = TestAdditions.backend.send(JobsApi().jobsList("admin", "pwd", None))
@@ -151,7 +156,7 @@ class JobsApiSuite extends BaseServerSuite {
       throw new Exception(listResponse.body.left.get.getMessage)
     }
     assertEquals(value.size, jobsRegistered)
-    assert(!value.exists(_.name == "jobForTesting"))
+    assert(!value.exists(_.name == "jobForTesting2"))
   }
 
 }
