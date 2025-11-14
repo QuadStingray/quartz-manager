@@ -21,7 +21,8 @@ class HistoryApiSuite extends BaseServerSuite {
           className = "dev.quadstingray.quartz.manager.SampleJob",
           cronExpression = "0 0 0 ? * * 2088",
           group = "testGroup",
-          priority = 0
+          priority = 0,
+          jobDataMap = Map.empty
         )
       )
     )

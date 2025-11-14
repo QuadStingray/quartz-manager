@@ -11,14 +11,14 @@ object TestAdditions {
 
   def startServer(): Unit = {
     if (!isServerStarted) {
+      StdSchedulerFactory.getDefaultScheduler.start()
       server.startServer()
       isServerStarted = true
-      StdSchedulerFactory.getDefaultScheduler.start()
     }
-//      while (true) {}
   }
 
   def testServerHost: String = {
     s"http://${server.interface}:${server.port}"
   }
+
 }
