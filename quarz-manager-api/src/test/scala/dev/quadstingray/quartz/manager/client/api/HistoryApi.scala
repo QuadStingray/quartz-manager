@@ -6,10 +6,10 @@
   */
 package dev.quadstingray.quartz.manager.client.api
 
-import dev.quadstingray.quartz.manager.TestAdditions
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
 import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.client.model.LogRecord
+import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
 
@@ -27,15 +27,18 @@ class HistoryApi(baseUrl: String) {
     *
     * @param id
     */
-  def historyById(bearerToken: String, username: String, password: String)(id: String): Request[Either[ResponseException[String, Exception], LogRecord], Any] = {
+  def historyById(
+    bearerToken: String,
+    username: String,
+    password: String
+  )(id: String): Request[Either[ResponseException[String, Exception], LogRecord], Any] = {
     val request = basicRequest
       .method(Method.GET, uri"$baseUrl/api/history/${id}")
       .contentType("application/json")
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(asJson[LogRecord])
   }
@@ -54,8 +57,7 @@ class HistoryApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(asJson[Seq[LogRecord]])
   }

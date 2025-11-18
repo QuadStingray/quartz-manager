@@ -12,4 +12,8 @@ import io.circe.Decoder
 import io.circe.Encoder
 import sttp.client3.circe.SttpCirceApi
 
-object JsonSupport extends SttpCirceApi with AutoDerivation with DateSerializers with AdditionalTypeSerializers {}
+object JsonSupport extends SttpCirceApi with AutoDerivation with DateSerializers with AdditionalTypeSerializers {
+
+  implicit val StatusDecoder: Decoder[Status.Status] = Decoder.decodeEnumeration(Status)
+  implicit val StatusEncoder: Encoder[Status.Status] = Encoder.encodeEnumeration(Status)
+}

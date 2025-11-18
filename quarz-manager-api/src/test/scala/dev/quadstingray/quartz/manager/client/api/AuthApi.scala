@@ -6,10 +6,10 @@
   */
 package dev.quadstingray.quartz.manager.client.api
 
-import dev.quadstingray.quartz.manager.TestAdditions
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
 import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.client.model.TokenResponse
+import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
 

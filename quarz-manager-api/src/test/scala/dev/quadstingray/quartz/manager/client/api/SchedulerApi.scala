@@ -8,6 +8,7 @@ package dev.quadstingray.quartz.manager.client.api
 
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
 import dev.quadstingray.quartz.manager.client.model.ErrorResponse
+import dev.quadstingray.quartz.manager.client.model.SchedulerInformation
 import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
@@ -17,6 +18,29 @@ object SchedulerApi {
 }
 
 class SchedulerApi(baseUrl: String) {
+
+  /** Start the Quartz Scheduler
+    *
+    * Expected answers: code 200 : SchedulerInformation () code 0 : ErrorResponse ()
+    *
+    * Available security schemes: httpAuth1 (http) httpAuth (http)
+    */
+  def schedulerInformation(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], SchedulerInformation], Any] =
+    {
+      val request = basicRequest
+        .method(Method.GET, uri"$baseUrl/api/scheduler")
+        .contentType("application/json")
+
+      val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+      withAuth
+        .auth
+        .bearer(bearerToken)
+        .auth
+        .basic(username, password)
+        .response(asJson[SchedulerInformation])
+    }
 
   /** Shutdown the Quartz Scheduler
     *
@@ -35,8 +59,7 @@ class SchedulerApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(
         asString.mapWithMetadata(
@@ -61,8 +84,7 @@ class SchedulerApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(
         asString.mapWithMetadata(
@@ -87,8 +109,7 @@ class SchedulerApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(
         asString.mapWithMetadata(

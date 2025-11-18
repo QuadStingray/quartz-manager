@@ -42,8 +42,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(
         asString.mapWithMetadata(
@@ -78,8 +77,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .body(requestBody)
       .response(
@@ -105,8 +103,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(asJson[Seq[JobInformation]])
   }
@@ -125,8 +122,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .response(asJson[Seq[String]])
   }
@@ -148,8 +144,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .body(jobConfig)
       .response(asJson[JobInformation])
@@ -172,8 +167,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .body(triggerConfig)
       .response(
@@ -208,8 +202,7 @@ class JobsApi(baseUrl: String) {
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-    withAuth
-      .auth
+    withAuth.auth
       .basic(username, password)
       .body(jobConfig)
       .response(asJson[JobInformation])

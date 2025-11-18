@@ -7,7 +7,7 @@
       "api-generator": {
         "generatorName": "scala-sttp",
         "output": "./target/client-project",
-        "inputSpec": "http://0.0.0.0:8080/docs/docs.yaml",
+        "inputSpec": "http://127.0.0.1:8080/docs/docs.yaml",
         "additionalProperties": {
           "mainPackage": "dev.quadstingray.quartz.manager.client",
           "artifactId": "client",

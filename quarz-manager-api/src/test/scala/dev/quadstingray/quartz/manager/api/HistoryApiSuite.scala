@@ -11,9 +11,7 @@ class HistoryApiSuite extends BaseServerSuite {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    if (!scheduler.isStarted) {
-      scheduler.start()
-    }
+    scheduler.start()
     val registerJobResponse = TestAdditions.backend.send(
       JobsApi().registerJob("", "admin", "pwd")(
         JobConfig(
