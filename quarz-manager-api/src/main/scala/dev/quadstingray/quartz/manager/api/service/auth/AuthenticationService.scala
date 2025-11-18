@@ -70,7 +70,7 @@ trait AuthenticationService {
   }
 
   lazy val securedEndpointDefinition = {
-    if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.auth.active")) {
+    if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.auth.enabled")) {
       if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.auth.basic")) {
         bearerBasicEndpointDefinition
       }

@@ -86,7 +86,7 @@ class AuthRoutes(authenticationService: AuthenticationService) extends CirceSche
     }
 
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
-    if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.auth.active")) {
+    if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.auth.enabled")) {
       List(loginEndpoint, checkTokenEndpoint, extendTokenEndpoint)
     }
     else {
