@@ -19,7 +19,8 @@ class SchedulerApiSuite extends BaseServerSuite {
     assert(scheduler.isInStandbyMode, "Scheduler should be standby")
   }
 
-  test("Shutdown Scheduler") {
+  // other test could not run after called this test. scheduler is shutdown after this test and could not restart.
+  test("Shutdown Scheduler".ignore) {
     scheduler.start()
     val response = TestAdditions.backend.send(SchedulerApi().shutdownScheduler("", "admin", "pwd")(waitForJobsToComplete = Some(true)))
     assert(response.isSuccess)

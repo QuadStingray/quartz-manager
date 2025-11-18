@@ -1,5 +1,6 @@
 package dev.quadstingray.quartz.manager.api.json
 
+import dev.quadstingray.quartz.manager.api.model.Status
 import io.circe.Decoder
 import io.circe.Decoder.Result
 import io.circe.Encoder
@@ -35,6 +36,16 @@ trait CirceSchema {
         s => java.lang.System.Logger.Level.valueOf(s)
       )
       .apply(c)
+  }
+
+  implicit val StatusFormat: Encoder[Status.Value] with Decoder[Status.Value] = new Encoder[Status.Value] with Decoder[Status.Value] {
+    override def apply(vendor: Status.Value): Json = Option(vendor)
+      .map(
+        a => Encoder.encodeString.apply(a.toString)
+      )
+      .getOrElse(Json.Null)
+
+    override def apply(c: HCursor): Result[Status.Value] = Decoder.decodeString.map(Status.fromString).apply(c)
   }
 
   implicit val DateTimeFormat: Encoder[DateTime] with Decoder[DateTime] = new Encoder[DateTime] with Decoder[DateTime] {
