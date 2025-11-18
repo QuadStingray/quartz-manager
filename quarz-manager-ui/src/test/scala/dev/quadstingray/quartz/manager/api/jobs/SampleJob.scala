@@ -1,9 +1,8 @@
 package dev.quadstingray.quartz.manager.api.jobs
 
 import dev.quadstingray.quartz.job.HistoryJob
-import org.quartz.JobExecutionContext
-
 import java.lang.System.Logger.Level
+import org.quartz.JobExecutionContext
 
 class SampleJob extends HistoryJob {
 
