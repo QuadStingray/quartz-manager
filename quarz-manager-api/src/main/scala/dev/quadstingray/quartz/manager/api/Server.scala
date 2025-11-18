@@ -6,6 +6,7 @@ import dev.quadstingray.quartz.manager.api.routes.AuthRoutes
 import dev.quadstingray.quartz.manager.api.routes.HistoryRoutes
 import dev.quadstingray.quartz.manager.api.routes.JobRoutes
 import dev.quadstingray.quartz.manager.api.routes.SchedulerRoutes
+import dev.quadstingray.quartz.manager.api.routes.SystemRoutes
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
 import dev.quadstingray.quartz.manager.api.service.auth.DefaultAuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
@@ -47,7 +48,9 @@ class Server(
   private var shutdownStarted: Boolean                                 = false
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
-    new AuthRoutes(authenticationService).endpoints ++ new SchedulerRoutes(authenticationService, scheduler).endpoints ++
+    new AuthRoutes(authenticationService).endpoints ++
+      new SystemRoutes(authenticationService, scheduler).endpoints ++
+      new SchedulerRoutes(authenticationService, scheduler).endpoints ++
       new JobRoutes(authenticationService, classGraphService, scheduler).endpoints ++
       new HistoryRoutes(authenticationService).endpoints
   }
