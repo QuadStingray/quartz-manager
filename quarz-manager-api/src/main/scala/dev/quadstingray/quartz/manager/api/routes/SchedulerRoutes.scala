@@ -1,7 +1,6 @@
 package dev.quadstingray.quartz.manager.api.routes
 
 import dev.quadstingray.quartz.manager.api.json.CirceSchema
-import dev.quadstingray.quartz.manager.api.model.LogRecord
 import dev.quadstingray.quartz.manager.api.model.SchedulerInformation
 import dev.quadstingray.quartz.manager.api.model.Status
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
@@ -26,24 +25,14 @@ class SchedulerRoutes(authenticationService: AuthenticationService, scheduler: S
 
   private val getSchedulerInformation = schedulerApiBaseEndpoint
     .out(jsonBody[SchedulerInformation])
-    .summary("Start Scheduler")
-    .description("Start the Quartz Scheduler")
+    .summary("Get Scheduler Information")
+    .description("Get all Informations about the current Quartz Scheduler")
     .method(Method.GET)
     .name("schedulerInformation")
     .serverLogicSuccess {
       _ => _ =>
         Future {
-          val status: Status.Value = Status.fromScheduler(scheduler)
-          SchedulerInformation(
-            scheduler.getSchedulerInstanceId,
-            scheduler.getSchedulerName,
-            scheduler.getMetaData.getVersion,
-            scheduler.getMetaData.getSchedulerClass.getName,
-            scheduler.getMetaData.getJobStoreClass.getName,
-            status,
-            scheduler.getCurrentlyExecutingJobs.size,
-            scheduler.getMetaData.getThreadPoolSize
-          )
+          SchedulerInformation(scheduler)
         }
     }
 
