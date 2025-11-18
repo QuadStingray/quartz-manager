@@ -15,7 +15,7 @@ class HistoryApiSuite extends BaseServerSuite {
       scheduler.start()
     }
     val registerJobResponse = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "pwd", None)(
+      JobsApi().registerJob("", "admin", "pwd")(
         JobConfig(
           name = "jobForTesting",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -27,14 +27,14 @@ class HistoryApiSuite extends BaseServerSuite {
       )
     )
     assert(registerJobResponse.isSuccess)
-    val triggerJobResponse = TestAdditions.backend.send(JobsApi().executeJob("admin", "pwd", None)("testGroup", "jobForTesting", Map.empty))
+    val triggerJobResponse = TestAdditions.backend.send(JobsApi().executeJob("", "admin", "pwd")("testGroup", "jobForTesting", Map.empty))
     assert(triggerJobResponse.isSuccess)
     Thread.sleep(10.seconds.toMillis)
   }
 
   test("Job History List") {
     scheduler.standby()
-    val response = TestAdditions.backend.send(HistoryApi().historyList("admin", "pwd", None))
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd"))
     assert(response.isSuccess)
     val logRecords = response.body.getOrElse(List.empty)
     assert(logRecords.nonEmpty)

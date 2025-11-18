@@ -6,6 +6,8 @@
   */
 package dev.quadstingray.quartz.manager.client.api
 
+import dev.quadstingray.quartz.manager.client.core.JsonSupport._
+import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
@@ -24,14 +26,18 @@ class SchedulerApi(baseUrl: String) {
     *
     * @param waitForJobsToComplete
     */
-  def shutdownScheduler(username: String, password: String, bearerToken: Option[String])(waitForJobsToComplete: Option[Boolean] = None) =
-    basicRequest
+  def shutdownScheduler(bearerToken: String, username: String, password: String)(
+    waitForJobsToComplete: Option[Boolean] = None
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.POST, uri"$baseUrl/api/scheduler/shutdown?waitForJobsToComplete=${waitForJobsToComplete}")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(
         asString.mapWithMetadata(
           ResponseAs.deserializeRightWithError(
@@ -39,6 +45,7 @@ class SchedulerApi(baseUrl: String) {
           )
         )
       )
+  }
 
   /** Standby the Quartz Scheduler
     *
@@ -46,14 +53,17 @@ class SchedulerApi(baseUrl: String) {
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def standbyScheduler(username: String, password: String, bearerToken: Option[String])() =
-    basicRequest
+  def standbyScheduler(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.POST, uri"$baseUrl/api/scheduler/standby")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(
         asString.mapWithMetadata(
           ResponseAs.deserializeRightWithError(
@@ -61,6 +71,7 @@ class SchedulerApi(baseUrl: String) {
           )
         )
       )
+  }
 
   /** Start the Quartz Scheduler
     *
@@ -68,14 +79,17 @@ class SchedulerApi(baseUrl: String) {
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def startScheduler(username: String, password: String, bearerToken: Option[String])() =
-    basicRequest
+  def startScheduler(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.POST, uri"$baseUrl/api/scheduler/start")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(
         asString.mapWithMetadata(
           ResponseAs.deserializeRightWithError(
@@ -83,5 +97,6 @@ class SchedulerApi(baseUrl: String) {
           )
         )
       )
+  }
 
 }

@@ -6,12 +6,12 @@
   */
 package dev.quadstingray.quartz.manager.client.api
 
-import dev.quadstingray.quartz.manager.TestAdditions
 import dev.quadstingray.quartz.manager.client.core.JsonSupport._
 import dev.quadstingray.quartz.manager.client.model.ErrorResponse
 import dev.quadstingray.quartz.manager.client.model.JobConfig
 import dev.quadstingray.quartz.manager.client.model.JobInformation
 import dev.quadstingray.quartz.manager.client.model.TriggerConfig
+import dev.quadstingray.quartz.manager.TestAdditions
 import sttp.client3._
 import sttp.model.Method
 
@@ -32,17 +32,19 @@ class JobsApi(baseUrl: String) {
     * @param jobName
     *   Name of the Job
     */
-  def deleteJob(username: String, password: String, bearerToken: Option[String])(
+  def deleteJob(bearerToken: String, username: String, password: String)(
     jobGroup: String,
     jobName: String
-  ): Request[Either[ResponseException[String, Exception], Unit], Any] =
-    basicRequest
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.DELETE, uri"$baseUrl/api/jobs/${jobGroup}/${jobName}")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(
         asString.mapWithMetadata(
           ResponseAs.deserializeRightWithError(
@@ -50,6 +52,7 @@ class JobsApi(baseUrl: String) {
           )
         )
       )
+  }
 
   /** Execute scheduled Job manually
     *
@@ -65,17 +68,19 @@ class JobsApi(baseUrl: String) {
     *   Job Data map
     */
   def executeJob(
+    bearerToken: String,
     username: String,
-    password: String,
-    bearerToken: Option[String]
-  )(jobGroup: String, jobName: String, requestBody: Map[String, String]): Request[Either[ResponseException[String, Exception], Unit], Any] =
-    basicRequest
+    password: String
+  )(jobGroup: String, jobName: String, requestBody: Map[String, String]): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.POST, uri"$baseUrl/api/jobs/${jobGroup}/${jobName}")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .body(requestBody)
       .response(
         asString.mapWithMetadata(
@@ -84,6 +89,7 @@ class JobsApi(baseUrl: String) {
           )
         )
       )
+  }
 
   /** Returns the List of all registered Jobs with full information
     *
@@ -91,16 +97,19 @@ class JobsApi(baseUrl: String) {
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def jobsList(username: String, password: String, bearerToken: Option[String])(
-  ): Request[Either[ResponseException[String, Exception], Seq[JobInformation]], Any] =
-    basicRequest
+  def jobsList(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], Seq[JobInformation]], Any] = {
+    val request = basicRequest
       .method(Method.GET, uri"$baseUrl/api/jobs")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(asJson[Seq[JobInformation]])
+  }
 
   /** Returns the List of possible job classes
     *
@@ -108,16 +117,19 @@ class JobsApi(baseUrl: String) {
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def possibleJobsList(username: String, password: String, bearerToken: Option[String])(
-  ): Request[Either[ResponseException[String, Exception], Seq[String]], Any] =
-    basicRequest
+  def possibleJobsList(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], Seq[String]], Any] = {
+    val request = basicRequest
       .method(Method.GET, uri"$baseUrl/api/jobs/classes")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(asJson[Seq[String]])
+  }
 
   /** Register an Job and return the JobInformation with next schedule information
     *
@@ -127,18 +139,21 @@ class JobsApi(baseUrl: String) {
     *
     * @param jobConfig
     */
-  def registerJob(username: String, password: String, bearerToken: Option[String])(
+  def registerJob(bearerToken: String, username: String, password: String)(
     jobConfig: JobConfig
-  ): Request[Either[ResponseException[String, Exception], JobInformation], Any] =
-    basicRequest
+  ): Request[Either[ResponseException[String, Exception], JobInformation], Any] = {
+    val request = basicRequest
       .method(Method.PUT, uri"$baseUrl/api/jobs")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .body(jobConfig)
       .response(asJson[JobInformation])
+  }
 
   /** Register an Trigger to schedule a Job only one time.
     *
@@ -148,16 +163,18 @@ class JobsApi(baseUrl: String) {
     *
     * @param triggerConfig
     */
-  def registerTrigger(username: String, password: String, bearerToken: Option[String])(
+  def registerTrigger(bearerToken: String, username: String, password: String)(
     triggerConfig: TriggerConfig
-  ): Request[Either[ResponseException[String, Exception], Unit], Any] =
-    basicRequest
+  ): Request[Either[ResponseException[String, Exception], Unit], Any] = {
+    val request = basicRequest
       .method(Method.POST, uri"$baseUrl/api/jobs")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .body(triggerConfig)
       .response(
         asString.mapWithMetadata(
@@ -166,6 +183,7 @@ class JobsApi(baseUrl: String) {
           )
         )
       )
+  }
 
   /** Add Job and get JobInformation back
     *
@@ -180,18 +198,21 @@ class JobsApi(baseUrl: String) {
     * @param jobConfig
     */
   def updateJob(
+    bearerToken: String,
     username: String,
-    password: String,
-    bearerToken: Option[String]
-  )(jobGroup: String, jobName: String, jobConfig: JobConfig): Request[Either[ResponseException[String, Exception], JobInformation], Any] =
-    basicRequest
+    password: String
+  )(jobGroup: String, jobName: String, jobConfig: JobConfig): Request[Either[ResponseException[String, Exception], JobInformation], Any] = {
+    val request = basicRequest
       .method(Method.PATCH, uri"$baseUrl/api/jobs/${jobGroup}/${jobName}")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .body(jobConfig)
       .response(asJson[JobInformation])
+  }
 
 }

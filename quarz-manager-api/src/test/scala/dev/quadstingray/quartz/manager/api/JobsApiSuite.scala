@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 
 class JobsApiSuite extends BaseServerSuite {
 
-  var jobsRegistered: Int = 1
+  var jobsRegistered: Int = 0
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -17,7 +17,7 @@ class JobsApiSuite extends BaseServerSuite {
       .foreach(
         i => {
           val response = TestAdditions.backend.send(
-            JobsApi().registerJob("admin", "pwd", None)(
+            JobsApi().registerJob("", "admin", "pwd")(
               JobConfig(
                 name = "jobForTesting" + i,
                 className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -35,7 +35,7 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all possible jobs") {
-    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("admin", "pwd", None))
+    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("", "admin", "pwd"))
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
@@ -45,7 +45,7 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("Register a new job") {
     val response = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "pwd", None)(
+      JobsApi().registerJob("", "admin", "pwd")(
         JobConfig(
           name = "mySampleJob",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -80,7 +80,7 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("Register a job with invalid cron expression".ignore) {
     val response = TestAdditions.backend.send(
-      JobsApi().registerJob("admin", "pwd", None)(
+      JobsApi().registerJob("", "admin", "pwd")(
         JobConfig(
           name = "invalidCronJob",
           className = "dev.quadstingray.quartz.manager.SampleJob",
@@ -95,18 +95,18 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all registered jobs") {
-    val response = TestAdditions.backend.send(JobsApi().jobsList("admin", "pwd", None))
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd"))
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
     }
     assertEquals(value.size, jobsRegistered)
-    assert(value.exists(_.name == "jobForTesting"))
+    assert(value.exists(_.name == "jobForTesting0"))
   }
 
   test("Update an existing job") {
     val response = TestAdditions.backend.send(
-      JobsApi().updateJob("admin", "pwd", None)(
+      JobsApi().updateJob("", "admin", "pwd")(
         "testGroup",
         "jobForTesting10",
         JobConfig(
@@ -141,16 +141,16 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("Trigger an existing job") {
-    val request  = JobsApi().executeJob("admin", "pwd", None)("testGroup", "jobForTesting", Map.empty)
+    val request  = JobsApi().executeJob("", "admin", "pwd")("testGroup", "jobForTesting0", Map.empty)
     val response = TestAdditions.backend.send(request)
     assert(response.isSuccess)
   }
 
   test("Delete an existing job") {
-    val response = TestAdditions.backend.send(JobsApi().deleteJob("admin", "pwd", None)("testGroup", "jobForTesting2"))
+    val response = TestAdditions.backend.send(JobsApi().deleteJob("", "admin", "pwd")("testGroup", "jobForTesting2"))
     assert(response.isSuccess)
     jobsRegistered -= 1
-    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("admin", "pwd", None))
+    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd"))
     assert(listResponse.isSuccess)
     val value = listResponse.body.getOrElse {
       throw new Exception(listResponse.body.left.get.getMessage)
