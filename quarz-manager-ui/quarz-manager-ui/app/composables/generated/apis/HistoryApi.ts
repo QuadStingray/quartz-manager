@@ -25,10 +25,61 @@ import {
     LogRecordToJSON,
 } from '../models/index';
 
+export interface HistoryByIdRequest {
+    id: string;
+}
+
 /**
  * 
  */
 export class HistoryApi extends runtime.BaseAPI {
+
+    /**
+     * Returns a single Job History record by its ID
+     * Job History by ID
+     */
+    async historyByIdRaw(requestParameters: HistoryByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LogRecord>> {
+        if (requestParameters['id'] == null) {
+            throw new runtime.RequiredError(
+                'id',
+                'Required parameter "id" was null or undefined when calling historyById().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("httpAuth1", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+
+        let urlPath = `/api/history/{id}`;
+        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LogRecordFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns a single Job History record by its ID
+     * Job History by ID
+     */
+    async historyById(requestParameters: HistoryByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LogRecord> {
+        const response = await this.historyByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Returns the List of all Jobs History with full information

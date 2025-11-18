@@ -28,7 +28,7 @@ export function useNavigationMenu() {
       {
         title: t('history'),
         icon: 'pi pi-prime',
-        href: '/history',
+        href: '/history/',
       },
     ]
   })
