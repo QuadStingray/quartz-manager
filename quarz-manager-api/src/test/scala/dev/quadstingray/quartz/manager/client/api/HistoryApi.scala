@@ -19,24 +19,45 @@ object HistoryApi {
 
 class HistoryApi(baseUrl: String) {
 
+  /** Returns a single Job History record by its ID
+    *
+    * Expected answers: code 200 : LogRecord () code 0 : ErrorResponse ()
+    *
+    * Available security schemes: httpAuth1 (http) httpAuth (http)
+    *
+    * @param id
+    */
+  def historyById(bearerToken: String, username: String, password: String)(id: String): Request[Either[ResponseException[String, Exception], LogRecord], Any] = {
+    val request = basicRequest
+      .method(Method.GET, uri"$baseUrl/api/history/${id}")
+      .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
+      .auth
+      .basic(username, password)
+      .response(asJson[LogRecord])
+  }
+
   /** Returns the List of all Jobs History with full information
     *
     * Expected answers: code 200 : Seq[LogRecord] () code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
-  def historyList(
-    username: String,
-    password: String,
-    bearerToken: Option[String]
-  )(): Request[Either[ResponseException[String, Exception], Seq[LogRecord]], Any] =
-    basicRequest
+  def historyList(bearerToken: String, username: String, password: String)(
+  ): Request[Either[ResponseException[String, Exception], Seq[LogRecord]], Any] = {
+    val request = basicRequest
       .method(Method.GET, uri"$baseUrl/api/history")
       .contentType("application/json")
+
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+
+    withAuth
       .auth
       .basic(username, password)
-      .auth
-      .bearer(bearerToken.getOrElse("Bearer InvalidToken"))
       .response(asJson[Seq[LogRecord]])
+  }
 
 }
