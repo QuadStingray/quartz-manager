@@ -92,6 +92,9 @@ export class JobsApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
 
         let urlPath = `/api/jobs/{jobGroup}/{jobName}`;
         urlPath = urlPath.replace(`{${"jobGroup"}}`, encodeURIComponent(String(requestParameters['jobGroup'])));
@@ -148,6 +151,9 @@ export class JobsApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
 
         let urlPath = `/api/jobs/{jobGroup}/{jobName}`;
         urlPath = urlPath.replace(`{${"jobGroup"}}`, encodeURIComponent(String(requestParameters['jobGroup'])));
@@ -189,6 +195,9 @@ export class JobsApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
 
         let urlPath = `/api/jobs`;
 
@@ -227,6 +236,9 @@ export class JobsApi extends runtime.BaseAPI {
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
         }
 
         let urlPath = `/api/jobs/classes`;
@@ -276,6 +288,9 @@ export class JobsApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
 
         let urlPath = `/api/jobs`;
 
@@ -324,6 +339,9 @@ export class JobsApi extends runtime.BaseAPI {
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
         }
 
         let urlPath = `/api/jobs`;
@@ -386,6 +404,9 @@ export class JobsApi extends runtime.BaseAPI {
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
         }
 
         let urlPath = `/api/jobs/{jobGroup}/{jobName}`;

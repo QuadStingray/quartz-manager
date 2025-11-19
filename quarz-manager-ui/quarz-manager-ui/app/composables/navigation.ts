@@ -16,18 +16,13 @@ export function useNavigationMenu() {
         component: markRaw(separator),
       },
       {
-        title: t('scheduler'),
-        icon: 'pi pi-prime',
-        href: '/scheduler',
-      },
-      {
         title: t('jobs'),
-        icon: 'pi pi-prime',
+        icon: 'pi pi-server',
         href: '/jobs',
       },
       {
         title: t('history'),
-        icon: 'pi pi-prime',
+        icon: 'pi pi-history',
         href: '/history/',
       },
     ]

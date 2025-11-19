@@ -30,7 +30,7 @@ class SystemRoutes(authenticationService: AuthenticationService, scheduler: Sche
     .summary("Get System Information")
     .description("Get all Information about the system and current quartz scheduler")
     .method(Method.GET)
-    .name("schedulerOverview")
+    .name("systemOverview")
     .serverLogicSuccess {
       _ => _ =>
         Future {

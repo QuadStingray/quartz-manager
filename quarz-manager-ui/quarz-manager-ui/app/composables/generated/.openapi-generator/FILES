@@ -3,6 +3,7 @@ apis/AuthApi.ts
 apis/HistoryApi.ts
 apis/JobsApi.ts
 apis/SchedulerApi.ts
+apis/SystemApi.ts
 apis/index.ts
 index.ts
 models/ErrorResponse.ts
@@ -10,6 +11,10 @@ models/JobConfig.ts
 models/JobInformation.ts
 models/LogMessage.ts
 models/LogRecord.ts
+models/Overview.ts
+models/SchedulerInformation.ts
+models/Status.ts
+models/SystemOverview.ts
 models/TokenResponse.ts
 models/TriggerConfig.ts
 models/index.ts

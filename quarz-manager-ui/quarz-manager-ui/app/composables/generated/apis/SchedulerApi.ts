@@ -16,10 +16,13 @@
 import * as runtime from '../runtime';
 import type {
   ErrorResponse,
+  SchedulerInformation,
 } from '../models/index';
 import {
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    SchedulerInformationFromJSON,
+    SchedulerInformationToJSON,
 } from '../models/index';
 
 export interface ShutdownSchedulerRequest {
@@ -30,6 +33,48 @@ export interface ShutdownSchedulerRequest {
  * 
  */
 export class SchedulerApi extends runtime.BaseAPI {
+
+    /**
+     * Get all Informations about the current Quartz Scheduler
+     * Get Scheduler Information
+     */
+    async schedulerInformationRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SchedulerInformation>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("httpAuth1", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+
+        let urlPath = `/api/scheduler`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => SchedulerInformationFromJSON(jsonValue));
+    }
+
+    /**
+     * Get all Informations about the current Quartz Scheduler
+     * Get Scheduler Information
+     */
+    async schedulerInformation(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SchedulerInformation> {
+        const response = await this.schedulerInformationRaw(initOverrides);
+        return await response.value();
+    }
 
     /**
      * Shutdown the Quartz Scheduler
@@ -51,6 +96,9 @@ export class SchedulerApi extends runtime.BaseAPI {
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
         }
 
         let urlPath = `/api/scheduler/shutdown`;
@@ -90,6 +138,9 @@ export class SchedulerApi extends runtime.BaseAPI {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
         }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
 
         let urlPath = `/api/scheduler/standby`;
 
@@ -127,6 +178,9 @@ export class SchedulerApi extends runtime.BaseAPI {
             if (tokenString) {
                 headerParameters["Authorization"] = `Bearer ${tokenString}`;
             }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
         }
 
         let urlPath = `/api/scheduler/start`;
