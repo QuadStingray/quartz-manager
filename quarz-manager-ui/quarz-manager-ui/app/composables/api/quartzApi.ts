@@ -5,6 +5,7 @@ import {AuthApi} from '~/composables/generated/apis/AuthApi'
 import {HistoryApi} from '~/composables/generated/apis/HistoryApi'
 import {JobsApi} from '~/composables/generated/apis/JobsApi'
 import {SchedulerApi} from '~/composables/generated/apis/SchedulerApi'
+import {SystemApi} from '~/composables/generated/apis/SystemApi'
 import {useQuartzUrl} from "~/composables/api/quartzUrl";
 
 export function useQuartzApi() {
@@ -27,12 +28,14 @@ export function useQuartzApi() {
     const historyApi = new HistoryApi(configuration)
     const jobsApi = new JobsApi(configuration)
     const schedulerApi = new SchedulerApi(configuration)
+    const systemApi = new SystemApi(configuration)
 
     return {
         loginApi,
         authApi,
         historyApi,
         jobsApi,
-        schedulerApi
+        schedulerApi,
+        systemApi
     }
 }
