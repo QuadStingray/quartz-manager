@@ -24,11 +24,11 @@ object Status extends Enumeration {
   }
 
   def fromScheduler(scheduler: Scheduler) = {
-    val status = if (scheduler.isStarted) {
-      Status.Started
-    }
-    else if (scheduler.isInStandbyMode) {
+    val status = if (scheduler.isInStandbyMode) {
       Status.Standby
+    }
+    else if (scheduler.isStarted) {
+      Status.Started
     }
     else if (scheduler.isShutdown) {
       Status.Shutdown

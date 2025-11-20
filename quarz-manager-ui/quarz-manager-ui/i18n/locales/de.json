@@ -8,6 +8,8 @@
   "refresh": "Aktualisieren",
   "retry": "Wiederholen",
   "actions": "Aktionen",
+  "start": "Starten",
+  "pause": "Pausieren",
   "name": "Name",
   "description": "Beschreibung",
   "status": "Status",
