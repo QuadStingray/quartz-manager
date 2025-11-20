@@ -206,6 +206,13 @@ const deleteJob = async (job: JobInformation) => {
                 tooltipPosition="bottom"
             />
             <Button
+                icon="pi pi-pencil"
+                class="p-button-sm p-button-warning"
+                @click="$router.push(`/jobs/${data.group}/${data.name}`)"
+                :tooltip="t('jobsPage.tooltips.edit')"
+                tooltipPosition="bottom"
+            />
+            <Button
                 icon="pi pi-trash"
                 class="p-button-sm p-button-danger"
                 @click="confirmDeleteJob(data)"

@@ -67,6 +67,7 @@
     "noJobsFound": "Keine Jobs gefunden",
     "addJob": "Job hinzufügen",
     "addTrigger": "Trigger hinzufügen",
+    "updateJob": "Job aktualisieren",
     "backToJobs": "Zurück zu Jobs",
     "columns": {
       "nextFireTime": "Nächste Ausführung",
@@ -74,6 +75,7 @@
     },
     "tooltips": {
       "execute": "Job ausführen",
+      "edit": "Job bearbeiten",
       "delete": "Job löschen",
       "add": "Neuen Job hinzufügen",
       "addTrigger": "Einmaligen Trigger hinzufügen"
@@ -87,6 +89,10 @@
       "jobCreated": "Job erstellt",
       "jobCreatedDetail": "Job {name} wurde erfolgreich erstellt",
       "jobCreationFailed": "Job-Erstellung fehlgeschlagen",
+      "jobUpdated": "Job aktualisiert",
+      "jobUpdatedDetail": "Job {name} wurde erfolgreich aktualisiert",
+      "jobUpdateFailed": "Job-Aktualisierung fehlgeschlagen",
+      "jobLoadFailed": "Job konnte nicht geladen werden",
       "triggerCreated": "Trigger erstellt",
       "triggerCreatedDetail": "Einmaliger Trigger wurde erfolgreich erstellt",
       "triggerCreationFailed": "Trigger-Erstellung fehlgeschlagen"
