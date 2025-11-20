@@ -33,7 +33,7 @@ watch(pending, (isPending) => {
 watch(asyncError, (newError) => {
   if (newError) {
     console.error('Error fetching history detail:', newError);
-    error.value = newError.message || 'Failed to load history detail';
+    error.value = newError.message || t('historyPage.retry');
   } else {
     error.value = null;
   }
@@ -77,17 +77,17 @@ const goBack = () => {
             icon="pi pi-arrow-left"
             @click="goBack"
             text
-            tooltip="Back to History"
+            :tooltip="t('historyPage.backToHistory')"
             tooltipPosition="bottom"
         />
         <h1>{{ t('history') }} - {{ historyId }}</h1>
       </div>
       <Button
-          icon="pi pi-refresh"
-          @click="refreshHistory"
-          :loading="loading"
-          tooltip="Refresh"
-          tooltipPosition="bottom"
+        icon="pi pi-refresh"
+        :loading="loading"
+        @click="refreshHistory"
+        :label="t('refresh')"
+        severity="secondary"
       />
     </div>
 
@@ -100,7 +100,7 @@ const goBack = () => {
     <div v-else-if="error" class="text-center p-8">
       <i class="pi pi-exclamation-triangle text-yellow-500 text-4xl mb-4"></i>
       <h2>{{ error }}</h2>
-      <Button label="Retry" @click="refreshHistory" class="mt-4"/>
+      <Button :label="t('retry')" @click="refreshHistory" class="mt-4"/>
     </div>
 
     <!-- History Detail -->
@@ -120,7 +120,7 @@ const goBack = () => {
       <div class="terminal-body">
         <div v-if="!historyDetail.logMessages || historyDetail.logMessages.length === 0" class="terminal-empty">
           <i class="pi pi-info-circle mr-2"></i>
-          No log messages available
+          {{ t('historyPage.noLogMessages') }}
         </div>
         <div v-else class="log-messages">
           <div

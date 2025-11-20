@@ -28,7 +28,7 @@ watch(pending, (isPending) => {
 watch(asyncError, (newError) => {
   if (newError) {
     console.error('Error fetching history:', newError);
-    error.value = newError.message || 'Failed to load history';
+    error.value = newError.message || t('historyPage.retry');
   } else {
     error.value = null;
   }
@@ -51,16 +51,13 @@ const viewHistoryDetail = (record: LogRecord) => {
   <div class="card surface-0">
     <div class="flex justify-between items-center mb-4">
       <h1>{{ t('history') }}</h1>
-      <div>
-        <Button
-            icon="pi pi-refresh"
-            @click="refreshHistory"
-            :loading="loading"
-            class="mr-2"
-            tooltip="Refresh"
-            tooltipPosition="bottom"
-        />
-      </div>
+      <Button
+        icon="pi pi-refresh"
+        :loading="loading"
+        @click="refreshHistory"
+        :label="t('refresh')"
+        severity="secondary"
+      />
     </div>
 
     <DataTable
@@ -80,11 +77,11 @@ const viewHistoryDetail = (record: LogRecord) => {
         <div v-if="error" class="text-center p-4">
           <i class="pi pi-exclamation-triangle text-yellow-500 text-xl mb-2"></i>
           <p>{{ error }}</p>
-          <Button label="Retry" @click="refreshHistory" class="mt-2"/>
+          <Button :label="t('retry')" @click="refreshHistory" class="mt-2"/>
         </div>
         <div v-else class="text-center p-4">
           <i class="pi pi-info-circle text-blue-500 text-xl mb-2"></i>
-          <p>No history records found</p>
+          <p>{{ t('historyPage.noRecordsFound') }}</p>
         </div>
       </template>
 
@@ -92,24 +89,24 @@ const viewHistoryDetail = (record: LogRecord) => {
         <div class="flex justify-between">
           <span class="p-input-icon-left">
             <i class="pi pi-search"/>
-            <InputText placeholder="Search..."/>
+            <InputText :placeholder="t('search')"/>
           </span>
         </div>
       </template>
 
-      <Column field="id" header="ID" sortable>
+      <Column field="id" :header="t('historyPage.columns.id')" sortable>
       </Column>
 
-      <Column field="className" header="Class Name" sortable>
+      <Column field="className" :header="t('historyPage.columns.className')" sortable>
       </Column>
 
-      <Column field="date" header="Date" sortable>
+      <Column field="date" :header="t('date')" sortable>
         <template #body="{ data }">
           {{ formatDate(data.date) }}
         </template>
       </Column>
 
-      <Column header="Messages" sortable>
+      <Column :header="t('historyPage.columns.messages')" sortable>
         <template #body="{ data }">
           {{ data.logMessages?.length || 0 }}
         </template>

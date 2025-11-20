@@ -32,7 +32,7 @@ watch(pending, (isPending) => {
 watch(asyncError, (newError) => {
   if (newError) {
     console.error('Error fetching jobs:', newError);
-    error.value = newError.message || 'Failed to load jobs';
+    error.value = newError.message || t('jobsPage.retry');
   } else {
     error.value = null;
   }
@@ -54,8 +54,8 @@ const executeJob = async (job: JobInformation) => {
     // Show success message
     toast.add({
       severity: 'success',
-      summary: 'Job Executed',
-      detail: `Job ${job.name} has been executed successfully`,
+      summary: t('jobsPage.toast.executed'),
+      detail: t('jobsPage.toast.executedDetail', { name: job.name }),
       life: 3000
     });
   } catch (err) {
@@ -63,8 +63,8 @@ const executeJob = async (job: JobInformation) => {
     // Show error message
     toast.add({
       severity: 'error',
-      summary: 'Execution Failed',
-      detail: err.message || 'Failed to execute job',
+      summary: t('jobsPage.toast.executionFailed'),
+      detail: err.message || t('jobsPage.toast.executionFailed'),
       life: 3000
     });
   }
@@ -91,8 +91,8 @@ const deleteJob = async (job: JobInformation) => {
     // Show error message
     toast.add({
       severity: 'error',
-      summary: 'Deletion Failed',
-      detail: err.message || 'Failed to delete job',
+      summary: t('jobsPage.toast.deletionFailed'),
+      detail: err.message || t('jobsPage.toast.deleteFailedDetail'),
       life: 3000
     });
   }
@@ -104,16 +104,13 @@ const deleteJob = async (job: JobInformation) => {
   <div class="card surface-0">
     <div class="flex justify-between items-center mb-4">
       <h1>{{ t('jobs') }}</h1>
-      <div>
-        <Button
-            icon="pi pi-refresh"
-            @click="refreshJobs"
-            :loading="loading"
-            class="mr-2"
-            tooltip="Refresh"
-            tooltipPosition="bottom"
-        />
-      </div>
+      <Button
+        icon="pi pi-refresh"
+        :loading="loading"
+        @click="refreshJobs"
+        :label="t('refresh')"
+        severity="secondary"
+      />
     </div>
 
     <DataTable
@@ -131,11 +128,11 @@ const deleteJob = async (job: JobInformation) => {
         <div v-if="error" class="text-center p-4">
           <i class="pi pi-exclamation-triangle text-yellow-500 text-xl mb-2"></i>
           <p>{{ error }}</p>
-          <Button label="Retry" @click="refreshJobs" class="mt-2"/>
+          <Button :label="t('retry')" @click="refreshJobs" class="mt-2"/>
         </div>
         <div v-else class="text-center p-4">
           <i class="pi pi-info-circle text-blue-500 text-xl mb-2"></i>
-          <p>No jobs found</p>
+          <p>{{ t('jobsPage.noJobsFound') }}</p>
         </div>
       </template>
 
@@ -143,24 +140,24 @@ const deleteJob = async (job: JobInformation) => {
         <div class="flex justify-between">
           <span class="p-input-icon-left">
             <i class="pi pi-search"/>
-            <InputText placeholder="Search..."/>
+            <InputText :placeholder="t('search')"/>
           </span>
         </div>
       </template>
 
-      <Column field="name" header="Name" sortable>
+      <Column field="name" :header="t('name')" sortable>
       </Column>
 
-      <Column field="group" header="Group" sortable>
+      <Column field="group" :header="t('jobsPage.columns.group')" sortable>
       </Column>
 
-      <Column field="description" header="Description" sortable>
+      <Column field="description" :header="t('description')" sortable>
         <template #body="{ data }">
           {{ data.description || '-' }}
         </template>
       </Column>
 
-      <Column field="cronExpression" header="Cron Expression" sortable>
+      <Column field="cronExpression" :header="t('jobsPage.columns.cronExpression')" sortable>
         <template #body="{ data }">
           <div v-tooltip.bottom="data.cronExpressionHuman">
             {{ data.cronExpression }}
@@ -168,33 +165,33 @@ const deleteJob = async (job: JobInformation) => {
         </template>
       </Column>
 
-      <Column field="nextScheduledFireTime" header="Next Fire Time" sortable>
+      <Column field="nextScheduledFireTime" :header="t('jobsPage.columns.nextFireTime')" sortable>
         <template #body="{ data }">
           {{ formatDate(data.nextScheduledFireTime) }}
         </template>
       </Column>
 
-      <Column field="lastScheduledFireTime" header="Last Fire Time" sortable>
+      <Column field="lastScheduledFireTime" :header="t('jobsPage.columns.lastFireTime')" sortable>
         <template #body="{ data }">
           {{ formatDate(data.lastScheduledFireTime) }}
         </template>
       </Column>
 
-      <Column header="Actions" :exportable="false">
+      <Column :header="t('actions')" :exportable="false">
         <template #body="{ data }">
           <div class="flex gap-2">
             <Button
                 icon="pi pi-play"
                 class="p-button-sm p-button-success"
                 @click="executeJob(data)"
-                tooltip="Execute Job"
+                :tooltip="t('jobsPage.tooltips.execute')"
                 tooltipPosition="bottom"
             />
             <Button
                 icon="pi pi-trash"
                 class="p-button-sm p-button-danger"
                 @click="confirmDeleteJob(data)"
-                tooltip="Delete Job"
+                :tooltip="t('jobsPage.tooltips.delete')"
                 tooltipPosition="bottom"
             />
           </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
+const { t } = useI18n();
 const { $tokenManager } = useNuxtApp();
 const router = useRouter();
 
@@ -14,16 +15,16 @@ const logout = () => {
   <nav>
     <Toolbar>
       <template #start >
-        Quarz Manager UI
+        {{ t('topbar.title') }}
       </template>
 
       <template #end>
         <AppColorMode class="ml-6 mr-2" />
-        <Button 
-          icon="pi pi-sign-out" 
-          severity="danger" 
-          @click="logout" 
-          tooltip="Logout" 
+        <Button
+          icon="pi pi-sign-out"
+          severity="danger"
+          @click="logout"
+          :tooltip="t('topbar.logout')"
           tooltipPosition="bottom"
         />
       </template>

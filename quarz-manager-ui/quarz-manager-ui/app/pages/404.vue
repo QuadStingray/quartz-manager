@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const router = useRouter()
 </script>
 
@@ -16,10 +17,10 @@ const router = useRouter()
     </main>
     <div style="alignment: center">
       <h1 class="text-2xl text-5xl font-bold text-center">
-        Page not found ...
+        {{ t('notFound.title') }}
       </h1>
       <div class="col-12 mt-5 text-center">
-        <Button icon="pi pi-arrow-left" label="Back to home" @click="router.push('/')" />
+        <Button icon="pi pi-arrow-left" :label="t('notFound.button')" @click="router.push('/')" />
       </div>
     </div>
   </div>
