@@ -10,6 +10,12 @@
   "actions": "Actions",
   "start": "Start",
   "pause": "Pause",
+  "add": "Add",
+  "cancel": "Cancel",
+  "group": "Group",
+  "priority": "Priority",
+  "cronExpression": "Cron Expression",
+  "className": "Class Name",
   "name": "Name",
   "description": "Description",
   "status": "Status",
@@ -59,22 +65,26 @@
   },
   "jobsPage": {
     "noJobsFound": "No jobs found",
+    "addJob": "Add Job",
+    "backToJobs": "Back to Jobs",
     "columns": {
-      "group": "Group",
-      "cronExpression": "Cron Expression",
       "nextFireTime": "Next Fire Time",
       "lastFireTime": "Last Fire Time"
     },
     "tooltips": {
       "execute": "Execute Job",
-      "delete": "Delete Job"
+      "delete": "Delete Job",
+      "add": "Add New Job"
     },
     "toast": {
       "executed": "Job Executed",
       "executedDetail": "Job {name} has been executed successfully",
       "executionFailed": "Execution Failed",
       "deletionFailed": "Deletion Failed",
-      "deleteFailedDetail": "Failed to delete job"
+      "deleteFailedDetail": "Failed to delete job",
+      "jobCreated": "Job Created",
+      "jobCreatedDetail": "Job {name} has been created successfully",
+      "jobCreationFailed": "Job Creation Failed"
     }
   },
   "historyPage": {

@@ -104,13 +104,23 @@ const deleteJob = async (job: JobInformation) => {
   <div class="card surface-0">
     <div class="flex justify-between items-center mb-4">
       <h1>{{ t('jobs') }}</h1>
-      <Button
-        icon="pi pi-refresh"
-        :loading="loading"
-        @click="refreshJobs"
-        :label="t('refresh')"
-        severity="secondary"
-      />
+      <div class="flex gap-2">
+        <Button
+          icon="pi pi-plus"
+          @click="$router.push('/jobs/add')"
+          :label="t('add')"
+          severity="success"
+          :tooltip="t('jobsPage.tooltips.add')"
+          tooltipPosition="bottom"
+        />
+        <Button
+          icon="pi pi-refresh"
+          :loading="loading"
+          @click="refreshJobs"
+          :label="t('refresh')"
+          severity="secondary"
+        />
+      </div>
     </div>
 
     <DataTable
@@ -148,7 +158,7 @@ const deleteJob = async (job: JobInformation) => {
       <Column field="name" :header="t('name')" sortable>
       </Column>
 
-      <Column field="group" :header="t('jobsPage.columns.group')" sortable>
+      <Column field="group" :header="t('group')" sortable>
       </Column>
 
       <Column field="description" :header="t('description')" sortable>
@@ -157,7 +167,7 @@ const deleteJob = async (job: JobInformation) => {
         </template>
       </Column>
 
-      <Column field="cronExpression" :header="t('jobsPage.columns.cronExpression')" sortable>
+      <Column field="cronExpression" :header="t('cronExpression')" sortable>
         <template #body="{ data }">
           <div v-tooltip.bottom="data.cronExpressionHuman">
             {{ data.cronExpression }}
