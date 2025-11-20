@@ -4,5 +4,85 @@
   "scheduler": "Scheduler",
   "home": "Home",
   "save": "Speichern",
-  "search": "Suchen"
+  "search": "Suchen",
+  "refresh": "Aktualisieren",
+  "retry": "Wiederholen",
+  "actions": "Aktionen",
+  "name": "Name",
+  "description": "Beschreibung",
+  "status": "Status",
+  "version": "Version",
+  "date": "Datum",
+  "dashboard": {
+    "title": "System Dashboard",
+    "autoRefresh": "Automatische Aktualisierung alle 30 Sekunden",
+    "error": "Fehler beim Laden der Systemübersicht",
+    "scheduler": {
+      "title": "Scheduler Status",
+      "currentlyExecutingJobs": "Aktuell ausgeführte Jobs",
+      "threadPoolSize": "Thread Pool Größe",
+      "schedulerId": "Scheduler ID",
+      "schedulerClass": "Scheduler Klasse",
+      "jobStoreClass": "Job Store Klasse"
+    },
+    "system": {
+      "title": "System Informationen",
+      "memory": "Speichernutzung",
+      "usedMemory": "Verwendeter Speicher",
+      "total": "Gesamt",
+      "max": "Maximum",
+      "free": "Frei",
+      "cpu": "CPU Nutzung",
+      "systemCpuLoad": "System CPU Last",
+      "processCpuLoad": "Prozess CPU Last",
+      "hostname": "Hostname"
+    }
+  },
+  "login": {
+    "title": "Quartz Manager",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "usernamePlaceholder": "Benutzername eingeben",
+    "passwordPlaceholder": "Passwort eingeben",
+    "button": "Anmelden",
+    "error": "Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut."
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden ...",
+    "button": "Zurück zur Startseite"
+  },
+  "topbar": {
+    "title": "Quarz Manager UI",
+    "logout": "Abmelden"
+  },
+  "jobsPage": {
+    "noJobsFound": "Keine Jobs gefunden",
+    "columns": {
+      "group": "Gruppe",
+      "cronExpression": "Cron Ausdruck",
+      "nextFireTime": "Nächste Ausführung",
+      "lastFireTime": "Letzte Ausführung"
+    },
+    "tooltips": {
+      "execute": "Job ausführen",
+      "delete": "Job löschen"
+    },
+    "toast": {
+      "executed": "Job ausgeführt",
+      "executedDetail": "Job {name} wurde erfolgreich ausgeführt",
+      "executionFailed": "Ausführung fehlgeschlagen",
+      "deletionFailed": "Löschen fehlgeschlagen",
+      "deleteFailedDetail": "Job konnte nicht gelöscht werden"
+    }
+  },
+  "historyPage": {
+    "noRecordsFound": "Keine Historie-Einträge gefunden",
+    "backToHistory": "Zurück zur Historie",
+    "noLogMessages": "Keine Log-Nachrichten verfügbar",
+    "columns": {
+      "id": "ID",
+      "className": "Klassenname",
+      "messages": "Nachrichten"
+    }
+  }
 }

@@ -4,5 +4,85 @@
   "scheduler": "Scheduler",
   "home": "Home",
   "save": "Save",
-  "search": "Search"
+  "search": "Search",
+  "refresh": "Refresh",
+  "retry": "Retry",
+  "actions": "Actions",
+  "name": "Name",
+  "description": "Description",
+  "status": "Status",
+  "version": "Version",
+  "date": "Date",
+  "dashboard": {
+    "title": "System Dashboard",
+    "autoRefresh": "Auto-refreshing every 30 seconds",
+    "error": "Failed to fetch system overview",
+    "scheduler": {
+      "title": "Scheduler Status",
+      "currentlyExecutingJobs": "Currently Executing Jobs",
+      "threadPoolSize": "Thread Pool Size",
+      "schedulerId": "Scheduler ID",
+      "schedulerClass": "Scheduler Class",
+      "jobStoreClass": "Job Store Class"
+    },
+    "system": {
+      "title": "System Information",
+      "memory": "Memory Usage",
+      "usedMemory": "Used Memory",
+      "total": "Total",
+      "max": "Max",
+      "free": "Free",
+      "cpu": "CPU Usage",
+      "systemCpuLoad": "System CPU Load",
+      "processCpuLoad": "Process CPU Load",
+      "hostname": "Hostname"
+    }
+  },
+  "login": {
+    "title": "Quartz Manager",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Enter your username",
+    "passwordPlaceholder": "Enter your password",
+    "button": "Login",
+    "error": "Invalid username or password. Please try again."
+  },
+  "notFound": {
+    "title": "Page not found ...",
+    "button": "Back to home"
+  },
+  "topbar": {
+    "title": "Quarz Manager UI",
+    "logout": "Logout"
+  },
+  "jobsPage": {
+    "noJobsFound": "No jobs found",
+    "columns": {
+      "group": "Group",
+      "cronExpression": "Cron Expression",
+      "nextFireTime": "Next Fire Time",
+      "lastFireTime": "Last Fire Time"
+    },
+    "tooltips": {
+      "execute": "Execute Job",
+      "delete": "Delete Job"
+    },
+    "toast": {
+      "executed": "Job Executed",
+      "executedDetail": "Job {name} has been executed successfully",
+      "executionFailed": "Execution Failed",
+      "deletionFailed": "Deletion Failed",
+      "deleteFailedDetail": "Failed to delete job"
+    }
+  },
+  "historyPage": {
+    "noRecordsFound": "No history records found",
+    "backToHistory": "Back to History",
+    "noLogMessages": "No log messages available",
+    "columns": {
+      "id": "ID",
+      "className": "Class Name",
+      "messages": "Messages"
+    }
+  }
 }

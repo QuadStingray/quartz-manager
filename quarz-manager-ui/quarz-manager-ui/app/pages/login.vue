@@ -27,13 +27,13 @@ const formValid = computed(() => {
 // Handle login
 const handleLogin = async () => {
   if (!formValid.value) return;
-  
+
   loading.value = true;
   errorMessage.value = '';
-  
+
   try {
     const response = await loginApi(username.value, password.value).login();
-    
+
     // Store token in cookie with expiration date from response
     const authTokenCookie = useCookie('authToken', {
       expires: new Date(response.expiresAt),
@@ -41,17 +41,17 @@ const handleLogin = async () => {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
-    
+
     authTokenCookie.value = response.authToken;
-    
+
     // Update token manager state
     await $tokenManager.checkToken(true);
-    
+
     // Redirect to home page
     router.push('/');
   } catch (error) {
     console.error('Login error:', error);
-    errorMessage.value = 'Invalid username or password. Please try again.';
+    errorMessage.value = t('login.error');
   } finally {
     loading.value = false;
   }
@@ -71,52 +71,52 @@ onMounted(async () => {
   <div class="flex justify-center items-center min-h-screen bg-gray-100">
     <div class="card surface-0 p-6 shadow-lg rounded-lg w-full max-w-md">
       <div class="text-3xl font-bold mb-6 text-center text-blue-600">
-        Quartz Manager
+        {{ t('login.title') }}
       </div>
-      
+
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div class="field">
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-1">{{ t('login.username') }}</label>
           <div class="p-input-icon-right w-full">
             <i class="pi pi-user" />
-            <InputText 
-              id="username" 
-              v-model="username" 
-              type="text" 
-              class="w-full" 
-              placeholder="Enter your username"
+            <InputText
+              id="username"
+              v-model="username"
+              type="text"
+              class="w-full"
+              :placeholder="t('login.usernamePlaceholder')"
               :class="{ 'p-invalid': errorMessage }"
               autofocus
             />
           </div>
         </div>
-        
+
         <div class="field">
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">{{ t('login.password') }}</label>
           <div class="p-input-icon-right w-full">
-            <i 
-              :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" 
-              @click="showPassword = !showPassword" 
+            <i
+              :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+              @click="showPassword = !showPassword"
               style="cursor: pointer;"
             />
-            <InputText 
-              id="password" 
-              v-model="password" 
-              :type="showPassword ? 'text' : 'password'" 
-              class="w-full" 
-              placeholder="Enter your password"
+            <InputText
+              id="password"
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              class="w-full"
+              :placeholder="t('login.passwordPlaceholder')"
               :class="{ 'p-invalid': errorMessage }"
               @keyup.enter="handleLogin"
             />
           </div>
         </div>
-        
+
         <small v-if="errorMessage" class="p-error block mt-2">{{ errorMessage }}</small>
-        
-        <Button 
-          type="submit" 
-          label="Login" 
-          class="w-full" 
+
+        <Button
+          type="submit"
+          :label="t('login.button')"
+          class="w-full"
           :loading="loading"
           :disabled="!formValid || loading"
         />
