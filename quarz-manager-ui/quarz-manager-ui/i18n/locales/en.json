@@ -66,6 +66,7 @@
   "jobsPage": {
     "noJobsFound": "No jobs found",
     "addJob": "Add Job",
+    "addTrigger": "Add Trigger",
     "backToJobs": "Back to Jobs",
     "columns": {
       "nextFireTime": "Next Fire Time",
@@ -74,7 +75,8 @@
     "tooltips": {
       "execute": "Execute Job",
       "delete": "Delete Job",
-      "add": "Add New Job"
+      "add": "Add New Job",
+      "addTrigger": "Add One-Time Trigger"
     },
     "toast": {
       "executed": "Job Executed",
@@ -84,7 +86,10 @@
       "deleteFailedDetail": "Failed to delete job",
       "jobCreated": "Job Created",
       "jobCreatedDetail": "Job {name} has been created successfully",
-      "jobCreationFailed": "Job Creation Failed"
+      "jobCreationFailed": "Job Creation Failed",
+      "triggerCreated": "Trigger Created",
+      "triggerCreatedDetail": "One-time trigger has been created successfully",
+      "triggerCreationFailed": "Trigger Creation Failed"
     }
   },
   "historyPage": {
