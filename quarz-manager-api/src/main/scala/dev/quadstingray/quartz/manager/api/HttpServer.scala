@@ -6,6 +6,9 @@ import org.apache.pekko.http.scaladsl.server.RequestContext
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.util.Random
+import sttp.model.Method
+import sttp.tapir.server.interceptor.cors.CORSConfig
+import sttp.tapir.server.interceptor.cors.CORSConfig.AllowedMethods
 import sttp.tapir.server.interceptor.cors.CORSInterceptor
 import sttp.tapir.server.interceptor.RequestInterceptor
 import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
@@ -16,6 +19,10 @@ object HttpServer extends LazyLogging {
   lazy val requestIdAttributeKey: AttributeKey[String] = AttributeKey[String]("X-REQUEST-ID")
 
   private val serverOptions: PekkoHttpServerOptions = {
+    val corsConfig = CORSConfig.default.copy(allowedMethods =
+      AllowedMethods.Some(Set(Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.PATCH, Method.OPTIONS))
+    )
+
     val serverOptions = PekkoHttpServerOptions.customiseInterceptors
       .prependInterceptor(RequestInterceptor.transformServerRequest {
         request =>
@@ -23,7 +30,7 @@ object HttpServer extends LazyLogging {
           val changedContext = requestContext.withRequest(requestContext.request.addAttribute(requestIdAttributeKey, Random.alphanumeric.take(10).mkString))
           Future.successful(request.withUnderlying(changedContext))
       })
-      .corsInterceptor(CORSInterceptor.default[Future])
+      .corsInterceptor(CORSInterceptor.customOrThrow[Future](corsConfig))
 
     serverOptions.options
   }
