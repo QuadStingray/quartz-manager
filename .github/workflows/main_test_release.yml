@@ -1,0 +1,67 @@
+name: Build and Release Process
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+  repository_dispatch:
+    types: [build]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '25' ]
+    steps:
+      - uses: actions/checkout@main
+      - name: Setup TimeZone
+        uses: MathRobin/timezone-action@v1.1
+        with:
+          timezoneLinux: "Europe/Berlin"
+          timezoneMacos: "Europe/Berlin"
+          timezoneWindows: "W. Europe Standard Time"
+      - name: Set up JDK ${{ matrix.Java }}
+        uses: coursier/setup-action@main
+        with:
+          jvm: corretto:${{ matrix.Java }}
+          apps: sbt scala scalac
+      - name: Run tests
+        run: |
+          timedatectl
+          sbt +test
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_ADMIN_TOKEN }}
+      - id: install-secret-key
+        name: Install gpg secret key
+        run: cat <(echo -e "${{ secrets.PGP_SECRET_KEY }}") | gpg --batch --import
+      - name: Set up JDK
+        uses: coursier/setup-action@main
+        with:
+          jvm: corretto:21
+          apps: sbt scala scalac
+      - name: Install pnpm
+        uses: pnpm/action-setup@master
+      - name: Build UI Components
+        run: |
+          pnpm build-ui
+      - name: Release
+        env:
+          GITHUB_USER: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          SONATYPE_USER: ${{ secrets.SONATYPE_USER }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSWORD }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET_KEY }}
+        run: | 
+          git config --global user.email "ci@quadstingry.dev"
+          git config --global user.name "QuadStingry CI"
+          sbt ci-release
