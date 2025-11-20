@@ -10,6 +10,12 @@
   "actions": "Aktionen",
   "start": "Starten",
   "pause": "Pausieren",
+  "add": "Hinzufügen",
+  "cancel": "Abbrechen",
+  "group": "Gruppe",
+  "priority": "Priorität",
+  "cronExpression": "Cron Ausdruck",
+  "className": "Klassenname",
   "name": "Name",
   "description": "Beschreibung",
   "status": "Status",
@@ -59,22 +65,26 @@
   },
   "jobsPage": {
     "noJobsFound": "Keine Jobs gefunden",
+    "addJob": "Job hinzufügen",
+    "backToJobs": "Zurück zu Jobs",
     "columns": {
-      "group": "Gruppe",
-      "cronExpression": "Cron Ausdruck",
       "nextFireTime": "Nächste Ausführung",
       "lastFireTime": "Letzte Ausführung"
     },
     "tooltips": {
       "execute": "Job ausführen",
-      "delete": "Job löschen"
+      "delete": "Job löschen",
+      "add": "Neuen Job hinzufügen"
     },
     "toast": {
       "executed": "Job ausgeführt",
       "executedDetail": "Job {name} wurde erfolgreich ausgeführt",
       "executionFailed": "Ausführung fehlgeschlagen",
       "deletionFailed": "Löschen fehlgeschlagen",
-      "deleteFailedDetail": "Job konnte nicht gelöscht werden"
+      "deleteFailedDetail": "Job konnte nicht gelöscht werden",
+      "jobCreated": "Job erstellt",
+      "jobCreatedDetail": "Job {name} wurde erfolgreich erstellt",
+      "jobCreationFailed": "Job-Erstellung fehlgeschlagen"
     }
   },
   "historyPage": {
