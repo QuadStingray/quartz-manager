@@ -80,6 +80,11 @@
       "add": "Neuen Job hinzufügen",
       "addTrigger": "Einmaligen Trigger hinzufügen"
     },
+    "hints": {
+      "selectJobClass": "Wählen Sie die auszuführende Job-Klasse aus",
+      "cronExample": "Beispiel: 0 0/5 * * * ? (alle 5 Minuten)",
+      "priorityRange": "Priorität von 1 (niedrigste) bis 100 (höchste)"
+    },
     "toast": {
       "executed": "Job ausgeführt",
       "executedDetail": "Job {name} wurde erfolgreich ausgeführt",

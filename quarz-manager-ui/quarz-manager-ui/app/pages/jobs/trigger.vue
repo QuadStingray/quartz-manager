@@ -130,7 +130,7 @@ const handleCancel = () => {
           showClear
           required
         />
-        <small class="text-gray-500">Select the job class to execute</small>
+        <small class="text-gray-500">{{ t('jobsPage.hints.selectJobClass') }}</small>
       </div>
 
       <!-- Priority -->
@@ -147,7 +147,7 @@ const handleCancel = () => {
           showButtons
           required
         />
-        <small class="text-gray-500">Priority from 1 (lowest) to 100 (highest)</small>
+        <small class="text-gray-500">{{ t('jobsPage.hints.priorityRange') }}</small>
       </div>
 
       <!-- Form Actions -->
