@@ -68,6 +68,22 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
       .default(ModelConstants.jobDefaultGroup)
       .and(path[String]("jobName").description("Name of the Job"))
 
+  private val getJobEndpoint = jobApiBaseEndpoint
+    .in(jobGroupParameter)
+    .out(jsonBody[JobInformation])
+    .summary("Get Job Information")
+    .description("Returns Information about a single Job")
+    .method(Method.GET)
+    .name("getJobInformation")
+    .serverLogic {
+      _ => p =>
+        Future {
+          Right {
+            jobService.getJobDetails(p._1, p._2)
+          }
+        }
+    }
+
   // https://www.freeformatter.com/cron-expression-generator-quartz.html
   private val updateJobEndpoint = jobApiBaseEndpoint
     .in(jobGroupParameter)
@@ -173,7 +189,16 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     }
 
   lazy val endpoints: List[ServerEndpoint[PekkoStreams with capabilities.WebSockets, Future]] = {
-    List(jobsListEndpoint, registerJobEndpoint, updateJobEndpoint, deleteJobEndpoint, executeJobEndpoint, jobClassesEndpoint, registerTriggerRoutes)
+    List(
+      jobsListEndpoint,
+      getJobEndpoint,
+      registerJobEndpoint,
+      updateJobEndpoint,
+      deleteJobEndpoint,
+      executeJobEndpoint,
+      jobClassesEndpoint,
+      registerTriggerRoutes
+    )
   }
 
 }

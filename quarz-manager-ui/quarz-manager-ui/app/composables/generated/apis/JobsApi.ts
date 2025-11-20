@@ -42,6 +42,11 @@ export interface ExecuteJobRequest {
     requestBody?: { [key: string]: string; };
 }
 
+export interface GetJobInformationRequest {
+    jobGroup: string;
+    jobName: string;
+}
+
 export interface RegisterJobRequest {
     jobConfig: JobConfig;
 }
@@ -176,6 +181,64 @@ export class JobsApi extends runtime.BaseAPI {
      */
     async executeJob(requestParameters: ExecuteJobRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.executeJobRaw(requestParameters, initOverrides);
+    }
+
+    /**
+     * Returns Information about a single Job
+     * Get Job Information
+     */
+    async getJobInformationRaw(requestParameters: GetJobInformationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobInformation>> {
+        if (requestParameters['jobGroup'] == null) {
+            throw new runtime.RequiredError(
+                'jobGroup',
+                'Required parameter "jobGroup" was null or undefined when calling getJobInformation().'
+            );
+        }
+
+        if (requestParameters['jobName'] == null) {
+            throw new runtime.RequiredError(
+                'jobName',
+                'Required parameter "jobName" was null or undefined when calling getJobInformation().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("httpAuth1", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+            headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+        }
+
+        let urlPath = `/api/jobs/{jobGroup}/{jobName}`;
+        urlPath = urlPath.replace(`{${"jobGroup"}}`, encodeURIComponent(String(requestParameters['jobGroup'])));
+        urlPath = urlPath.replace(`{${"jobName"}}`, encodeURIComponent(String(requestParameters['jobName'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => JobInformationFromJSON(jsonValue));
+    }
+
+    /**
+     * Returns Information about a single Job
+     * Get Job Information
+     */
+    async getJobInformation(requestParameters: GetJobInformationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<JobInformation> {
+        const response = await this.getJobInformationRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
