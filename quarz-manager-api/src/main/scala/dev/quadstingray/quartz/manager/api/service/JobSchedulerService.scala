@@ -21,9 +21,7 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
 
   def removeJobFromScheduler(jobGroup: String, jobName: String): Unit = {
     getTriggerList(jobGroup, jobName).foreach(
-      trigger => {
-        scheduler.unscheduleJob(trigger.getKey)
-      }
+      trigger => scheduler.unscheduleJob(trigger.getKey)
     )
     scheduler.deleteJob(new JobKey(jobName, jobGroup))
   }
@@ -81,8 +79,22 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
     var priority: Int                = Int.MaxValue
     var triggerCron: String          = ""
     if (schedulerTriggerList.nonEmpty) {
-      nextFireTime = schedulerTriggerList.map(_.getNextFireTime).map(v => Option(v)).filter(_.nonEmpty).map(_.get).minOption
-      lastFireTime = schedulerTriggerList.map(_.getPreviousFireTime).map(v => Option(v)).filter(_.nonEmpty).map(_.get).maxOption
+      nextFireTime = schedulerTriggerList
+        .map(_.getNextFireTime)
+        .map(
+          v => Option(v)
+        )
+        .filter(_.nonEmpty)
+        .map(_.get)
+        .minOption
+      lastFireTime = schedulerTriggerList
+        .map(_.getPreviousFireTime)
+        .map(
+          v => Option(v)
+        )
+        .filter(_.nonEmpty)
+        .map(_.get)
+        .maxOption
       priority = schedulerTriggerList.map(_.getPriority).min
       triggerCron = schedulerTriggerList.filter(_.isInstanceOf[CronTrigger]).map(_.asInstanceOf[CronTrigger].getCronExpression).headOption.getOrElse("")
     }
@@ -122,5 +134,9 @@ class JobSchedulerService(classGraphService: ClassGraphService, scheduler: Sched
         }
       )
     jobList.toList
+  }
+
+  def getJobDetails(group: String, name: String): JobInformation = {
+    convertJobDetailToJobInformation(scheduler.getJobDetail(new JobKey(name, group)))
   }
 }
