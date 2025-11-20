@@ -114,6 +114,14 @@ const deleteJob = async (job: JobInformation) => {
           tooltipPosition="bottom"
         />
         <Button
+          icon="pi pi-bolt"
+          @click="$router.push('/jobs/trigger')"
+          :label="t('jobsPage.addTrigger')"
+          severity="info"
+          :tooltip="t('jobsPage.tooltips.addTrigger')"
+          tooltipPosition="bottom"
+        />
+        <Button
           icon="pi pi-refresh"
           :loading="loading"
           @click="refreshJobs"

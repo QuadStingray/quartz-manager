@@ -66,6 +66,7 @@
   "jobsPage": {
     "noJobsFound": "Keine Jobs gefunden",
     "addJob": "Job hinzufügen",
+    "addTrigger": "Trigger hinzufügen",
     "backToJobs": "Zurück zu Jobs",
     "columns": {
       "nextFireTime": "Nächste Ausführung",
@@ -74,7 +75,8 @@
     "tooltips": {
       "execute": "Job ausführen",
       "delete": "Job löschen",
-      "add": "Neuen Job hinzufügen"
+      "add": "Neuen Job hinzufügen",
+      "addTrigger": "Einmaligen Trigger hinzufügen"
     },
     "toast": {
       "executed": "Job ausgeführt",
@@ -84,7 +86,10 @@
       "deleteFailedDetail": "Job konnte nicht gelöscht werden",
       "jobCreated": "Job erstellt",
       "jobCreatedDetail": "Job {name} wurde erfolgreich erstellt",
-      "jobCreationFailed": "Job-Erstellung fehlgeschlagen"
+      "jobCreationFailed": "Job-Erstellung fehlgeschlagen",
+      "triggerCreated": "Trigger erstellt",
+      "triggerCreatedDetail": "Einmaliger Trigger wurde erfolgreich erstellt",
+      "triggerCreationFailed": "Trigger-Erstellung fehlgeschlagen"
     }
   },
   "historyPage": {
