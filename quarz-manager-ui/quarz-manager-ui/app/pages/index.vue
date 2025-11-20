@@ -3,11 +3,12 @@ import {useQuartzApi} from "~/composables/api/quartzApi";
 import type {Overview} from "~/composables/generated/models/Overview";
 
 const { d, t, n, locale, locales, setLocale } = useI18n()
-const { systemApi } = useQuartzApi()
+const { systemApi, schedulerApi } = useQuartzApi()
 
 const overview = ref<Overview | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const schedulerActionLoading = ref(false)
 
 const fetchOverview = async () => {
   try {
@@ -50,14 +51,39 @@ const getMemoryUsedPercentage = (total: number, free: number) => {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'STARTED':
+    case 'Started':
       return 'success'
-    case 'SHUTDOWN':
+    case 'Shutdown':
       return 'danger'
-    case 'STANDBY':
+    case 'Standby':
       return 'warn'
     default:
       return 'info'
+  }
+}
+
+const isSchedulerRunning = computed(() => {
+  return overview.value?.scheduler.status === 'Started'
+})
+
+const toggleScheduler = async () => {
+  if (!overview.value) return
+
+  try {
+    schedulerActionLoading.value = true
+
+    if (isSchedulerRunning.value) {
+      await schedulerApi.standbyScheduler()
+    } else {
+      await schedulerApi.startScheduler()
+    }
+
+    // Refresh overview after action
+    await fetchOverview()
+  } catch (e: any) {
+    error.value = e.message || 'Failed to toggle scheduler'
+  } finally {
+    schedulerActionLoading.value = false
   }
 }
 </script>
@@ -76,13 +102,22 @@ const getStatusColor = (status: string) => {
       <!-- Header -->
       <div class="flex justify-between items-center mb-4">
         <h1 class="text-3xl font-bold">{{ t('dashboard.title') }}</h1>
-        <Button
-          icon="pi pi-refresh"
-          :loading="loading"
-          @click="fetchOverview"
-          :label="t('refresh')"
-          severity="secondary"
-        />
+        <div class="flex gap-2">
+          <Button
+            :icon="isSchedulerRunning ? 'pi pi-pause' : 'pi pi-play'"
+            :loading="schedulerActionLoading"
+            @click="toggleScheduler"
+            :label="isSchedulerRunning ? t('pause') : t('start')"
+            :severity="isSchedulerRunning ? 'warning' : 'success'"
+          />
+          <Button
+            icon="pi pi-refresh"
+            :loading="loading"
+            @click="fetchOverview"
+            :label="t('refresh')"
+            severity="secondary"
+          />
+        </div>
       </div>
 
       <!-- Scheduler Status -->
