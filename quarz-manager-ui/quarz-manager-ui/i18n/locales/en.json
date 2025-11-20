@@ -80,6 +80,11 @@
       "add": "Add New Job",
       "addTrigger": "Add One-Time Trigger"
     },
+    "hints": {
+      "selectJobClass": "Select the job class to execute",
+      "cronExample": "Example: 0 0/5 * * * ? (every 5 minutes)",
+      "priorityRange": "Priority from 1 (lowest) to 100 (highest)"
+    },
     "toast": {
       "executed": "Job Executed",
       "executedDetail": "Job {name} has been executed successfully",
