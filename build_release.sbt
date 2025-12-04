@@ -35,7 +35,7 @@ releaseCommitMessage     := s"ci: prepare release of version ${runtimeVersion.va
 commands += Command.command("ci-release")(
   (state: State) => {
     val semVersion = new Semver(version.value)
-    if (semVersion.isStable) {
+    if ((semVersion.getSuffixTokens() == null || semVersion.getSuffixTokens().length == 0)) {
       val callback: (String) => Unit = (s: String) => state.log.err(s"error on release parsing: $s")
       Command.process("release with-defaults", state, callback)
     }
@@ -53,8 +53,7 @@ releaseProcess := {
     commitReleaseVersion,
     tagRelease,
     releaseStepCommandAndRemaining("+publishSigned"),
-    releaseStepCommand("sonatypeBundleRelease"),
-    releaseStepCommand("ci-docker"),
+    releaseStepCommand("sonaRelease"),
     setToMyNextVersion,
     releaseStepCommand("scalafmtAll"),
     gitAddAllTask,

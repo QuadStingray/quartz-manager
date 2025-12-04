@@ -1,26 +1,22 @@
-ThisBuild / publishTo := sonatypePublishToBundle.value
-
-ThisBuild / credentials += Credentials(
-  "Sonatype Nexus Repository Manager",
-  "oss.sonatype.org",
-  System.getenv("SONATYPE_USER"),
-  System.getenv("SONATYPE_PASSWORD")
-)
-ThisBuild / credentials += Credentials(
-  "New Sonatype Nexus Repository Manager",
-  "s01.oss.sonatype.org",
-  System.getenv("SONATYPE_USER"),
-  System.getenv("SONATYPE_PASSWORD")
-)
+ThisBuild / publishTo := {
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (isSnapshot.value) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
+}
 
 Global / useGpgPinentry := true
 
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
+ThisBuild / credentials += Credentials(
+  "Sonatype Nexus Repository Manager",
+  "central.sonatype.com",
+  System.getenv("SONATYPE_USER"),
+  System.getenv("SONATYPE_PASSWORD")
+)
 
 packageOptions += {
   Package.ManifestAttributes(
     "Created-By"               -> "Simple Build Tool",
-    "Built-By"                 -> "mongocamp",
+    "Built-By"                 -> "QuadStingry",
     "Build-Jdk"                -> System.getProperty("java.version"),
     "Specification-Title"      -> name.value,
     "Specification-Version"    -> version.value,

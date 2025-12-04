@@ -26,21 +26,19 @@ class SchedulerApi(baseUrl: String) {
     * Available security schemes: httpAuth1 (http) httpAuth (http)
     */
   def schedulerInformation(bearerToken: String, username: String, password: String)(
-  ): Request[Either[ResponseException[String, Exception], SchedulerInformation], Any] =
-    {
-      val request = basicRequest
-        .method(Method.GET, uri"$baseUrl/api/scheduler")
-        .contentType("application/json")
+  ): Request[Either[ResponseException[String, Exception], SchedulerInformation], Any] = {
+    val request = basicRequest
+      .method(Method.GET, uri"$baseUrl/api/scheduler")
+      .contentType("application/json")
 
-      val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
+    val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request
 
-      withAuth
-        .auth
-        .bearer(bearerToken)
-        .auth
-        .basic(username, password)
-        .response(asJson[SchedulerInformation])
-    }
+    withAuth.auth
+      .bearer(bearerToken)
+      .auth
+      .basic(username, password)
+      .response(asJson[SchedulerInformation])
+  }
 
   /** Shutdown the Quartz Scheduler
     *
