@@ -1,28 +1,32 @@
 {
-  "name": "quartz-manager",
-  "organization": "dev.quadstingray",
-  "version": "0.5.0",
-  "description": "",
-  "directories": {},
-  "scripts": {
-    "api-codegen:ui": "rm -rf quarz-manager-ui/quarz-manager-ui/app/composables/generated; openapi-generator-cli generate --generator-key ui-api-generator;",
-    "api-codegen": "rm -rf client-project; openapi-generator-cli generate --generator-key api-generator;",
-    "api-codegen:clean": "rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/api; rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/core; rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/model;",
-    "api-codegen:copy": "pnpm api-codegen:clean; pnpm api-codegen:remove-version; pnpm api-codegen; yes | cp -r ./target/client-project/src/main/ ./quarz-manager-api/src/test/;  sbt Test/scalafmt;",
-    "api-codegen:remove-version": "jq 'del(.[\"generator-cli\"].version)' openapitools.json > tmp.json; mv tmp.json openapitools.json",
-    "build-ui": "rm -rf quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; mkdir -p quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; cd quarz-manager-ui/quarz-manager-ui && pnpm install && pnpm generate --dotenv webjar.env && cd ../..; cp -r -p quarz-manager-ui/quarz-manager-ui/.output/public/* quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui",
-    "dev": " cd quarz-manager-ui/quarz-manager-ui && pnpm dev && cd ../..;"
+  "name" : "quartz-manager",
+  "organization" : "dev.quadstingray",
+  "version" : "0.5.2.snapshot",
+  "description" : "",
+  "directories" : {
+    
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/QuadStingray/quartz-manager.git"
+  "scripts" : {
+    "api-codegen:remove-version" : "jq 'del(.[\"generator-cli\"].version)' openapitools.json > tmp.json; mv tmp.json openapitools.json",
+    "api-codegen:clean" : "rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/api; rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/core; rm -rf ./quarz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/model;",
+    "build-ui" : "rm -rf quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; mkdir -p quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; cd quarz-manager-ui/quarz-manager-ui && pnpm install && pnpm generate --dotenv webjar.env && cd ../..; cp -r -p quarz-manager-ui/quarz-manager-ui/.output/public/* quarz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui",
+    "dev" : " cd quarz-manager-ui/quarz-manager-ui && pnpm dev && cd ../..;",
+    "api-codegen:ui" : "rm -rf quarz-manager-ui/quarz-manager-ui/app/composables/generated; openapi-generator-cli generate --generator-key ui-api-generator;",
+    "api-codegen" : "rm -rf client-project; openapi-generator-cli generate --generator-key api-generator;",
+    "api-codegen:copy" : "pnpm api-codegen:clean; pnpm api-codegen:remove-version; pnpm api-codegen; yes | cp -r ./target/client-project/src/main/ ./quarz-manager-api/src/test/;  sbt Test/scalafmt;"
   },
-  "author": "info@quadstingray.dev",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/QuadStingray/quartz-manager/issues"
+  "repository" : {
+    "type" : "git",
+    "url" : "git+https://github.com/QuadStingray/quartz-manager.git"
   },
-  "homepage": "https://mongodb-server.mongocamp.dev",
-  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a",
-  "dependencies": {}
+  "author" : "info@quadstingray.dev",
+  "license" : "Apache-2.0",
+  "bugs" : {
+    "url" : "https://github.com/QuadStingray/quartz-manager/issues"
+  },
+  "homepage" : "https://mongodb-server.mongocamp.dev",
+  "packageManager" : "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a",
+  "dependencies" : {
+    
+  }
 }
