@@ -1,6 +1,8 @@
 package dev.quadstingray.quartz.manager
 import dev.quadstingray.quartz.manager.api.Server
 import org.quartz.impl.StdSchedulerFactory
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.Await
 import sttp.client3.HttpClientSyncBackend
 
 object TestAdditions {
@@ -12,8 +14,17 @@ object TestAdditions {
   def startServer(): Unit = {
     if (!isServerStarted) {
       StdSchedulerFactory.getDefaultScheduler.start()
-      server.startServer()
+      Await.result(server.startServer(), 30.seconds)
       isServerStarted = true
+    }
+  }
+
+  def stopServer(): Unit = {
+    if (isServerStarted) {
+      StdSchedulerFactory.getDefaultScheduler.start()
+      StdSchedulerFactory.getDefaultScheduler.clear()
+      server.shutdown()
+      isServerStarted = false
     }
   }
 
