@@ -3,7 +3,7 @@ import dev.quadstingray.sbt.json.JsonFile
 
 lazy val root = Project(id = "quartz-manager-parent", base = file(".")).aggregate(api, ui)
 
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "2.13.18"
 
 val json = JsonFile(file("package.json"))
 
