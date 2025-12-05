@@ -20,6 +20,8 @@ jobs:
 
       - name: Create Release
         uses: ncipollo/release-action@main
+        permissions:
+          contents: write
         with:
           allowUpdates: true
           draft: false
