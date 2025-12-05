@@ -7,14 +7,14 @@ class SchedulerApiSuite extends BaseServerSuite {
 
   test("Start Scheduler") {
     scheduler.standby()
-    val response = TestAdditions.backend.send(SchedulerApi().startScheduler("", "admin", "pwd"))
+    val response = TestAdditions.backend.send(SchedulerApi().startScheduler("", "admin", "pwd")())
     assert(response.isSuccess)
     assert(scheduler.isStarted, "Scheduler should be started")
   }
 
   test("Standby Scheduler") {
     scheduler.start()
-    val response = TestAdditions.backend.send(SchedulerApi().standbyScheduler("", "admin", "pwd"))
+    val response = TestAdditions.backend.send(SchedulerApi().standbyScheduler("", "admin", "pwd")())
     assert(response.isSuccess)
     assert(scheduler.isInStandbyMode, "Scheduler should be standby")
   }
