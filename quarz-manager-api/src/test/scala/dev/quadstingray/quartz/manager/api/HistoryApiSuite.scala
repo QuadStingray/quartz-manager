@@ -32,7 +32,7 @@ class HistoryApiSuite extends BaseServerSuite {
 
   test("Job History List") {
     scheduler.standby()
-    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd"))
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")())
     assert(response.isSuccess)
     val logRecords = response.body.getOrElse(List.empty)
     assert(logRecords.nonEmpty)

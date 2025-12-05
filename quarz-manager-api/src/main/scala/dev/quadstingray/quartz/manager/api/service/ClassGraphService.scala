@@ -4,7 +4,6 @@ import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
 import io.github.classgraph.ScanResult
 import scala.jdk.CollectionConverters._
-import scala.reflect.runtime.universe.runtimeMirror
 import scala.util.Try
 
 class ClassGraphService extends LazyLogging {

@@ -35,7 +35,7 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all possible jobs") {
-    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("", "admin", "pwd"))
+    val response = TestAdditions.backend.send(JobsApi().possibleJobsList("", "admin", "pwd")())
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
@@ -95,7 +95,7 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all registered jobs") {
-    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd"))
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")())
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
@@ -150,7 +150,7 @@ class JobsApiSuite extends BaseServerSuite {
     val response = TestAdditions.backend.send(JobsApi().deleteJob("", "admin", "pwd")("testGroup", "jobForTesting2"))
     assert(response.isSuccess)
     jobsRegistered -= 1
-    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd"))
+    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")())
     assert(listResponse.isSuccess)
     val value = listResponse.body.getOrElse {
       throw new Exception(listResponse.body.left.get.getMessage)

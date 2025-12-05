@@ -7,6 +7,8 @@ val scalaVersions = Seq("2.13.18", "3.7.4")
 
 crossScalaVersions := scalaVersions
 
+ThisBuild / crossScalaVersions := scalaVersions
+
 ThisBuild / scalaVersion := scalaVersions.head
 
 val json = JsonFile(file("package.json"))
