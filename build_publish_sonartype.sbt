@@ -16,7 +16,7 @@ ThisBuild / credentials += Credentials(
 packageOptions += {
   Package.ManifestAttributes(
     "Created-By"               -> "Simple Build Tool",
-    "Built-By"                 -> "QuadStingry",
+    "Built-By"                 -> "QuadStingray",
     "Build-Jdk"                -> System.getProperty("java.version"),
     "Specification-Title"      -> name.value,
     "Specification-Version"    -> version.value,
