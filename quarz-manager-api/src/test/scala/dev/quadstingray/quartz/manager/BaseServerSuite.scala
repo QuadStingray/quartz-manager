@@ -6,12 +6,10 @@ trait BaseServerSuite extends munit.FunSuite {
 
   override def beforeAll(): Unit = {
     TestAdditions.startServer()
-    resetDatabase()
   }
 
   override def afterAll(): Unit = {
-    resetDatabase()
+    TestAdditions.stopServer()
   }
 
-  private def resetDatabase(): Unit = synchronized {}
 }

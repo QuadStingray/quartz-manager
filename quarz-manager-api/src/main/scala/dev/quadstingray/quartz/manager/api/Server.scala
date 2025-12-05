@@ -16,9 +16,13 @@ import org.apache.pekko.http.scaladsl.server.Directives.reject
 import org.apache.pekko.http.scaladsl.server.Route
 import org.apache.pekko.http.scaladsl.server.RouteConcatenation
 import org.apache.pekko.http.scaladsl.Http
+import org.apache.pekko.Done
 import org.quartz.impl.StdSchedulerFactory
 import org.quartz.Scheduler
 import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.duration.Duration
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import sttp.capabilities.pekko.PekkoStreams
@@ -45,7 +49,8 @@ class Server(
   private lazy val beforeServerStartCallBacks: ArrayBuffer[() => Unit] = ArrayBuffer()
   private lazy val afterServerStartCallBacks: ArrayBuffer[() => Unit]  = ArrayBuffer()
   private lazy val serverShutdownCallBacks: ArrayBuffer[() => Unit]    = ArrayBuffer()
-  private var shutdownStarted: Boolean                                 = false
+  private var shutdownRunning: Boolean                                 = false
+  private var serverBinding: Http.ServerBinding                        = _
 
   private def serverEndpoints: List[ServerEndpoint[PekkoStreams with WebSockets, Future]] = {
     new AuthRoutes(authenticationService).endpoints ++
@@ -69,6 +74,7 @@ class Server(
   }
 
   def startServer(): Future[Unit] = {
+    while (shutdownRunning) {}
     beforeServerStartCallBacks.foreach(
       f => f()
     )
@@ -76,7 +82,7 @@ class Server(
       .newServerAt(interface, port)
       .bindFlow(routeHandler(routes))
       .map(
-        serverBinding => {
+        binding => {
           logger.warn("init server with interface: %s at port: %s".format(interface, port))
           if (ConfigService.getBoolean("dev.quadstingray.quarz-manager.open.api.enabled")) {
             logger.warn("For Swagger go to: http://%s:%s/docs".format(interface, port))
@@ -84,7 +90,7 @@ class Server(
           afterServerStartCallBacks.foreach(
             f => f()
           )
-          serverBinding
+          serverBinding = binding
         }
       )
   }
@@ -110,13 +116,15 @@ class Server(
   }
 
   def shutdown(): Unit = {
-    if (!shutdownStarted) {
-      shutdownStarted = true
+    if (!shutdownRunning) {
+      shutdownRunning = true
       serverShutdownCallBacks.foreach(
         f => f()
       )
-      ActorHandler.requestActorSystem.terminate()
-      actorSystem.terminate()
+      Await.result(serverBinding.unbind(), Duration.Inf)
+      Await.result(serverBinding.terminate(1.millis), Duration.Inf)
+      shutdownRunning = false
     }
   }
+
 }
