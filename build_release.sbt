@@ -53,7 +53,7 @@ releaseProcess := {
     commitReleaseVersion,
     tagRelease,
     releaseStepCommandAndRemaining("+publishSigned"),
-    releaseStepCommand("+sonaRelease"),
+    releaseStepCommand("sonaRelease"),
     setToMyNextVersion,
     releaseStepCommand("scalafmtAll"),
     gitAddAllTask,
