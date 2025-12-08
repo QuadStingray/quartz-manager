@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.8.0] - 2025-12-08
+### :recycle: Refactors
+- [`7f35432`](https://github.com/QuadStingray/quartz-manager/commit/7f35432ee19840bd61787a9c9421ef359c4799cb) - rename all files and typos from `quarz` to `quartz`
+
+
 ## [v0.7.0] - 2025-12-05
 ### :sparkles: New Features
 - [`09225bd`](https://github.com/QuadStingray/quartz-manager/commit/09225bd9332acbfcfa9b178eb00d8c911cbb20d5) - REST API Structure *(commit by [@QuadStingray](https://github.com/QuadStingray))*
@@ -126,3 +131,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [v0.6.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.0.1...v0.6.0
 [v0.7.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.0.1...v0.7.0
+[v0.8.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.7.0...v0.8.0
