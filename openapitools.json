@@ -18,7 +18,7 @@
       },
       "ui-api-generator": {
         "generatorName": "typescript-fetch",
-        "output": "./quarz-manager-ui/quarz-manager-ui/app/composables/generated",
+        "output": "./quartz-manager-ui/quartz-manager-ui/app/composables/generated",
         "inputSpec": "http://127.0.0.1:8080/docs/docs.yaml",
         "additionalProperties": {
           "typescriptThreePlus": "true",

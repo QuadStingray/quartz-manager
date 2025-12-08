@@ -1,0 +1,116 @@
+{
+  "history": "Historie",
+  "jobs": "Jobs",
+  "scheduler": "Scheduler",
+  "home": "Home",
+  "save": "Speichern",
+  "search": "Suchen",
+  "refresh": "Aktualisieren",
+  "retry": "Wiederholen",
+  "actions": "Aktionen",
+  "start": "Starten",
+  "pause": "Pausieren",
+  "add": "Hinzufügen",
+  "cancel": "Abbrechen",
+  "group": "Gruppe",
+  "priority": "Priorität",
+  "cronExpression": "Cron Ausdruck",
+  "className": "Klassenname",
+  "name": "Name",
+  "description": "Beschreibung",
+  "status": "Status",
+  "version": "Version",
+  "date": "Datum",
+  "dashboard": {
+    "title": "System Dashboard",
+    "autoRefresh": "Automatische Aktualisierung alle 30 Sekunden",
+    "error": "Fehler beim Laden der Systemübersicht",
+    "scheduler": {
+      "title": "Scheduler Status",
+      "currentlyExecutingJobs": "Aktuell ausgeführte Jobs",
+      "threadPoolSize": "Thread Pool Größe",
+      "schedulerId": "Scheduler ID",
+      "schedulerClass": "Scheduler Klasse",
+      "jobStoreClass": "Job Store Klasse"
+    },
+    "system": {
+      "title": "System Informationen",
+      "memory": "Speichernutzung",
+      "usedMemory": "Verwendeter Speicher",
+      "total": "Gesamt",
+      "max": "Maximum",
+      "free": "Frei",
+      "cpu": "CPU Nutzung",
+      "systemCpuLoad": "System CPU Last",
+      "processCpuLoad": "Prozess CPU Last",
+      "hostname": "Hostname"
+    }
+  },
+  "login": {
+    "title": "Quartz Manager",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "usernamePlaceholder": "Benutzername eingeben",
+    "passwordPlaceholder": "Passwort eingeben",
+    "button": "Anmelden",
+    "error": "Ungültiger Benutzername oder Passwort. Bitte versuchen Sie es erneut."
+  },
+  "notFound": {
+    "title": "Seite nicht gefunden ...",
+    "button": "Zurück zur Startseite"
+  },
+  "topbar": {
+    "title": "Quartz Manager UI",
+    "logout": "Abmelden"
+  },
+  "jobsPage": {
+    "noJobsFound": "Keine Jobs gefunden",
+    "addJob": "Job hinzufügen",
+    "addTrigger": "Trigger hinzufügen",
+    "updateJob": "Job aktualisieren",
+    "backToJobs": "Zurück zu Jobs",
+    "columns": {
+      "nextFireTime": "Nächste Ausführung",
+      "lastFireTime": "Letzte Ausführung"
+    },
+    "tooltips": {
+      "execute": "Job ausführen",
+      "edit": "Job bearbeiten",
+      "delete": "Job löschen",
+      "add": "Neuen Job hinzufügen",
+      "addTrigger": "Einmaligen Trigger hinzufügen"
+    },
+    "hints": {
+      "selectJobClass": "Wählen Sie die auszuführende Job-Klasse aus",
+      "cronExample": "Beispiel: 0 0/5 * * * ? (alle 5 Minuten)",
+      "priorityRange": "Priorität von 1 (niedrigste) bis 100 (höchste)"
+    },
+    "toast": {
+      "executed": "Job ausgeführt",
+      "executedDetail": "Job {name} wurde erfolgreich ausgeführt",
+      "executionFailed": "Ausführung fehlgeschlagen",
+      "deletionFailed": "Löschen fehlgeschlagen",
+      "deleteFailedDetail": "Job konnte nicht gelöscht werden",
+      "jobCreated": "Job erstellt",
+      "jobCreatedDetail": "Job {name} wurde erfolgreich erstellt",
+      "jobCreationFailed": "Job-Erstellung fehlgeschlagen",
+      "jobUpdated": "Job aktualisiert",
+      "jobUpdatedDetail": "Job {name} wurde erfolgreich aktualisiert",
+      "jobUpdateFailed": "Job-Aktualisierung fehlgeschlagen",
+      "jobLoadFailed": "Job konnte nicht geladen werden",
+      "triggerCreated": "Trigger erstellt",
+      "triggerCreatedDetail": "Einmaliger Trigger wurde erfolgreich erstellt",
+      "triggerCreationFailed": "Trigger-Erstellung fehlgeschlagen"
+    }
+  },
+  "historyPage": {
+    "noRecordsFound": "Keine Historie-Einträge gefunden",
+    "backToHistory": "Zurück zur Historie",
+    "noLogMessages": "Keine Log-Nachrichten verfügbar",
+    "columns": {
+      "id": "ID",
+      "className": "Klassenname",
+      "messages": "Nachrichten"
+    }
+  }
+}
