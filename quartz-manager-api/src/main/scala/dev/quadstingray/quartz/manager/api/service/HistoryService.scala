@@ -4,6 +4,7 @@ import com.github.blemale.scaffeine.Scaffeine
 import dev.quadstingray.quartz.manager.api.model.LogMessage
 import dev.quadstingray.quartz.manager.api.model.LogRecord
 import java.util.Date
+import org.quartz.JobDetail
 import scala.collection.mutable.ListBuffer
 import scala.jdk.DurationConverters._
 
@@ -16,9 +17,14 @@ object HistoryService {
       .maximumSize(500)
       .build[String, LogRecord]()
 
-  def addToLog(cacheKey: String, className: String, logMessage: LogMessage): Unit = {
-    val logRecord = cache.getIfPresent(cacheKey).getOrElse(LogRecord(cacheKey, className, new Date(), ListBuffer.empty))
+  def addToLog(cacheKey: String, jobDetail: JobDetail, logMessage: LogMessage, defaultClassName: String): Unit = {
+    var logRecord = cache
+      .getIfPresent(cacheKey)
+      .getOrElse(LogRecord(cacheKey, Option(jobDetail).map(_.getJobClass.getName).getOrElse(defaultClassName), new Date(), ListBuffer.empty))
     logRecord.logMessages += logMessage
+    Option(jobDetail).foreach(
+      jD => logRecord = logRecord.copy(jobGroup = Option(jD.getKey.getGroup), jobName = Option(jD.getKey.getName))
+    )
     cache.put(cacheKey, logRecord)
   }
 
