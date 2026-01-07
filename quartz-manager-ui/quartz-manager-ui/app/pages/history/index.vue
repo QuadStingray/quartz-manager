@@ -73,7 +73,6 @@ const loadHistoryData = async () => {
 
     historyData.value = await response.value();
   } catch (err) {
-    console.error('Error fetching history:', err);
     error.value = err.message || t('historyPage.retry');
     historyData.value = [];
   } finally {

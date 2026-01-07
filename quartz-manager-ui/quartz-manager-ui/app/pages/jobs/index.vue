@@ -78,7 +78,6 @@ const loadJobsData = async () => {
       cronExpressionHuman: job.cronExpression ? cronstrue.toString(job.cronExpression, {locale: locale.value}) : '-'
     }));
   } catch (err) {
-    console.error('Error fetching jobs:', err);
     error.value = err.message || t('jobsPage.retry');
     jobsData.value = [];
   } finally {
@@ -119,7 +118,6 @@ const executeJob = async (job: JobInformation) => {
       life: 3000
     });
   } catch (err) {
-    console.error('Error executing job:', err);
     // Show error message
     toast.add({
       severity: 'error',
@@ -147,7 +145,6 @@ const deleteJob = async (job: JobInformation) => {
     });
     refreshJobs();
   } catch (err) {
-    console.error('Error deleting job:', err);
     // Show error message
     toast.add({
       severity: 'error',

@@ -32,7 +32,6 @@ watch(pending, (isPending) => {
 // Update error state when asyncError changes
 watch(asyncError, (newError) => {
   if (newError) {
-    console.error('Error fetching history detail:', newError);
     error.value = newError.message || t('historyPage.retry');
   } else {
     error.value = null;
