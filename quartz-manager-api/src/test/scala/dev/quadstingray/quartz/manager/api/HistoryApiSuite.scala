@@ -46,4 +46,35 @@ class HistoryApiSuite extends BaseServerSuite {
     assertEquals(logMessageBuffer.last.logMessage, "Job `SampleJob` execution finished")
   }
 
+  test("Job History List - sort by date descending") {
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")(sort = Some("-date")))
+    assert(response.isSuccess)
+    val logRecords = response.body.getOrElse(List.empty)
+    assert(logRecords.nonEmpty)
+  }
+
+  test("Job History List - query by single parameter") {
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")(query = Some("jobGroup:testGroup")))
+    assert(response.isSuccess)
+    val logRecords = response.body.getOrElse(List.empty)
+    assert(logRecords.nonEmpty)
+    assert(logRecords.forall(_.jobGroup.contains("testGroup")))
+  }
+
+  test("Job History List - query with two parameters") {
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")(query = Some("jobGroup:testGroup AND className:dev.quadstingray.quartz.manager.SampleJob")))
+    assert(response.isSuccess)
+    val logRecords = response.body.getOrElse(List.empty)
+    assert(logRecords.nonEmpty)
+    assert(logRecords.forall(rec => rec.jobGroup.contains("testGroup") && rec.className == "dev.quadstingray.quartz.manager.SampleJob"))
+  }
+
+  test("Job History List - query with OR operator") {
+    val response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")(query = Some("jobName:jobForTesting OR jobName:nonExistentJob")))
+    assert(response.isSuccess)
+    val logRecords = response.body.getOrElse(List.empty)
+    assert(logRecords.nonEmpty)
+    assert(logRecords.forall(_.jobName.contains("jobForTesting")))
+  }
+
 }

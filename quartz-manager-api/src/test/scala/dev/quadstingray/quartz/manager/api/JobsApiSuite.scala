@@ -104,6 +104,49 @@ class JobsApiSuite extends BaseServerSuite {
     assert(value.exists(_.name == "jobForTesting0"))
   }
 
+  test("List all registered jobs - sort by name ascending") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(sort = Some("name")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    val sortedByName = value.sortBy(_.name)
+    assertEquals(value, sortedByName)
+  }
+
+  test("List all registered jobs - query by single parameter") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(query = Some("group:testGroup")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(value.forall(_.group == "testGroup"))
+  }
+
+  test("List all registered jobs - query with two parameters") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(query = Some("group:testGroup AND jobClassName:dev.quadstingray.quartz.manager.SampleJob")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(value.forall(job => job.group == "testGroup" && job.jobClassName == "dev.quadstingray.quartz.manager.SampleJob"))
+  }
+
+  test("List all registered jobs - query with OR operator") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(query = Some("name:jobForTesting8 OR name:jobForTesting0")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(value.size == 2)
+    assert(value.exists(_.name == "jobForTesting8"))
+    assert(value.exists(_.name == "jobForTesting0"))
+  }
+
   test("Update an existing job") {
     val response = TestAdditions.backend.send(
       JobsApi().updateJob("", "admin", "pwd")(
