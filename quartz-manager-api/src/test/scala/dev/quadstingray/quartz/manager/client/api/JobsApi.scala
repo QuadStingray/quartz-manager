@@ -91,16 +91,29 @@ class JobsApi(baseUrl: String) {
 
   /** Returns the List of all registered Jobs with full information
     *
-    * Expected answers: code 200 : Seq[JobInformation] () code 0 : ErrorResponse ()
+    * Expected answers: code 200 : Seq[JobInformation] () Headers : x-pagination-count-rows - Total number of records x-pagination-rows-per-page - Number of
+    * records per page x-pagination-current-page - Current page x-pagination-count-pages - Total number of pages code 400 : String (Invalid value for: query
+    * parameter rowsPerPage, Invalid value for: query parameter page) code 0 : ErrorResponse ()
     *
     * Available security schemes: httpAuth1 (http) httpAuth (http)
+    *
+    * @param query
+    *   Lucene query string for filtering (e.g., 'group:batch AND jobClassName:MyJob')
+    * @param sort
+    *   Comma-separated sort fields, prefix with '-' for descending (e.g., '-nextScheduledFireTime,name')
+    * @param rowsPerPage
+    *   Number of items returned per page
+    * @param page
+    *   Desired page of the result set
     */
   def jobsList(bearerToken: String, username: String, password: String)(
     query: Option[String] = None,
-    sort: Option[String] = None
+    sort: Option[String] = None,
+    rowsPerPage: Option[Int] = None,
+    page: Option[Int] = None
   ): Request[Either[ResponseException[String, Exception], Seq[JobInformation]], Any] = {
-    val request = basicRequest
-      .method(Method.GET, uri"$baseUrl/api/jobs?query=${query}&sort=${sort}")
+      val request = basicRequest
+      .method(Method.GET, uri"$baseUrl/api/jobs?query=${query}&sort=${sort}&rowsPerPage=${rowsPerPage}&page=${page}")
       .contentType("application/json")
 
     val withAuth = if (bearerToken.nonEmpty) request.auth.bearer(bearerToken) else request

@@ -4,11 +4,15 @@ import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
 import dev.quadstingray.quartz.manager.api.model.ModelConstants
+import dev.quadstingray.quartz.manager.api.model.Paging
+import dev.quadstingray.quartz.manager.api.model.Paging.DefaultRowsPerPage
 import dev.quadstingray.quartz.manager.api.model.TriggerConfig
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
 import dev.quadstingray.quartz.manager.api.util.LuceneQueryParser
+import dev.quadstingray.quartz.manager.api.util.PaginationExtensions._
+import dev.quadstingray.quartz.manager.api.util.PaginationService
 import dev.quadstingray.quartz.manager.api.util.SortUtility
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
@@ -36,17 +40,17 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
     .in(query[Option[String]]("query").description("Lucene query string for filtering (e.g., 'group:batch AND jobClassName:MyJob')"))
     .in(query[Option[String]]("sort").description("Comma-separated sort fields, prefix with '-' for descending (e.g., '-nextScheduledFireTime,name')"))
     .out(jsonBody[List[JobInformation]])
+    .addPagination
     .summary("Registered Jobs")
     .description("Returns the List of all registered Jobs with full information")
     .method(Method.GET)
     .name("jobsList")
     .serverLogic {
-      _ => (params: (Option[String], Option[String])) =>
+      _ => { case (queryOpt, sortStringOpt, paging) =>
         Future {
           Right {
-            val (queryOpt, sortStringOpt) = params
-            val sortOpt                   = sortStringOpt.map(_.split(",").toList.map(_.trim).filter(_.nonEmpty))
-            val allJobs                   = jobService.jobsList()
+            val sortOpt = sortStringOpt.map(_.split(",").toList.map(_.trim).filter(_.nonEmpty))
+            val allJobs = jobService.jobsList()
 
             // Define field extractors for filtering
             val filterExtractors: Map[String, JobInformation => Option[String]] = Map(
@@ -102,9 +106,13 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
             val filtered = allJobs.filter(LuceneQueryParser.parseAndFilter(queryOpt, filterExtractors))
 
             // Apply sorting
-            SortUtility.sort(filtered, sortOpt, sortExtractors)
+            val sorted = SortUtility.sort(filtered, sortOpt, sortExtractors)
+
+            // Apply pagination
+            PaginationService.listToPage(sorted, paging.page.getOrElse(1), paging.rowsPerPage.getOrElse(DefaultRowsPerPage))
           }
         }
+      }
     }
 
   private val registerJobEndpoint = jobApiBaseEndpoint
