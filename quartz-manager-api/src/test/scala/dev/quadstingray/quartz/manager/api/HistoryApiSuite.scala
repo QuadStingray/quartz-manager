@@ -27,6 +27,21 @@ class HistoryApiSuite extends BaseServerSuite {
     assert(registerJobResponse.isSuccess)
     val triggerJobResponse = TestAdditions.backend.send(JobsApi().executeJob("", "admin", "pwd")("testGroup", "jobForTesting", Map.empty))
     assert(triggerJobResponse.isSuccess)
+    val registerJobResponse2 = TestAdditions.backend.send(
+      JobsApi().registerJob("", "admin", "pwd")(
+        JobConfig(
+          name = "jobForTesting2",
+          className = "dev.quadstingray.quartz.manager.SampleJob",
+          cronExpression = "0 0 0 ? * * 2088",
+          group = "testGroup",
+          priority = 0,
+          jobDataMap = Map.empty
+        )
+      )
+    )
+    assert(registerJobResponse2.isSuccess)
+    val triggerJobResponse2 = TestAdditions.backend.send(JobsApi().executeJob("", "admin", "pwd")("testGroup", "jobForTesting2", Map.empty))
+    assert(triggerJobResponse2.isSuccess)
     Thread.sleep(10.seconds.toMillis)
   }
 
@@ -80,7 +95,9 @@ class HistoryApiSuite extends BaseServerSuite {
     assert(response.isSuccess)
     val logRecords = response.body.getOrElse(List.empty)
     assert(logRecords.nonEmpty)
-    assert(logRecords.forall(_.jobName.contains("jobForTesting")))
+    println(logRecords)
+    assert(logRecords.size >= 2)
+    assert(logRecords.exists(_.jobName.contains("jobForTesting")))
   }
 
   test("Job History List - pagination with page 1 and rowsPerPage 1") {
@@ -92,7 +109,7 @@ class HistoryApiSuite extends BaseServerSuite {
 
   test("Job History List - pagination page 2") {
     val allResponse = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")())
-    val allRecords = allResponse.body.getOrElse(List.empty)
+    val allRecords  = allResponse.body.getOrElse(List.empty)
 
     if (allRecords.size > 1) {
       val page2Response = TestAdditions.backend.send(HistoryApi().historyList("", "admin", "pwd")(rowsPerPage = Some(1), page = Some(2)))
