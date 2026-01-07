@@ -6,12 +6,4 @@
   */
 package dev.quadstingray.quartz.manager.client.model
 
-case class JobConfig(
-  name: String,
-  className: String,
-  description: Option[String] = None,
-  cronExpression: String,
-  group: String,
-  priority: Int,
-  jobDataMap: Map[String, String]
-)
+case class Overview(system: SystemOverview, scheduler: SchedulerInformation)

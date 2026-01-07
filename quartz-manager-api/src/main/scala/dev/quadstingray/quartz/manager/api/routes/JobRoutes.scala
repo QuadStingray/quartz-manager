@@ -4,10 +4,16 @@ import dev.quadstingray.quartz.manager.api.json.CirceSchema
 import dev.quadstingray.quartz.manager.api.model.JobConfig
 import dev.quadstingray.quartz.manager.api.model.JobInformation
 import dev.quadstingray.quartz.manager.api.model.ModelConstants
+import dev.quadstingray.quartz.manager.api.model.Paging
+import dev.quadstingray.quartz.manager.api.model.Paging.DefaultRowsPerPage
 import dev.quadstingray.quartz.manager.api.model.TriggerConfig
 import dev.quadstingray.quartz.manager.api.service.auth.AuthenticationService
 import dev.quadstingray.quartz.manager.api.service.ClassGraphService
 import dev.quadstingray.quartz.manager.api.service.JobSchedulerService
+import dev.quadstingray.quartz.manager.api.util.LuceneQueryParser
+import dev.quadstingray.quartz.manager.api.util.PaginationExtensions._
+import dev.quadstingray.quartz.manager.api.util.PaginationService
+import dev.quadstingray.quartz.manager.api.util.SortUtility
 import dev.quadstingray.quartz.manager.api.ActorHandler
 import io.circe.generic.auto._
 import org.quartz._
@@ -31,18 +37,82 @@ class JobRoutes(authenticationService: AuthenticationService, classGraphService:
   private val jobApiBaseEndpoint = authenticationService.securedEndpointDefinition.tag("Jobs").in("api" / "jobs")
 
   private val jobsListEndpoint = jobApiBaseEndpoint
+    .in(query[Option[String]]("query").description("Lucene query string for filtering (e.g., 'group:batch AND jobClassName:MyJob')"))
+    .in(query[Option[String]]("sort").description("Comma-separated sort fields, prefix with '-' for descending (e.g., '-nextScheduledFireTime,name')"))
     .out(jsonBody[List[JobInformation]])
+    .addPagination
     .summary("Registered Jobs")
     .description("Returns the List of all registered Jobs with full information")
     .method(Method.GET)
     .name("jobsList")
     .serverLogic {
-      _ => _ =>
+      _ => { case (queryOpt, sortStringOpt, paging) =>
         Future {
           Right {
-            jobService.jobsList()
+            val sortOpt = sortStringOpt.map(_.split(",").toList.map(_.trim).filter(_.nonEmpty))
+            val allJobs = jobService.jobsList()
+
+            // Define field extractors for filtering
+            val filterExtractors: Map[String, JobInformation => Option[String]] = Map(
+              "name" -> (
+                j => Some(j.name)
+              ),
+              "group" -> (
+                j => Some(j.group)
+              ),
+              "jobClassName" -> (
+                j => Some(j.jobClassName)
+              ),
+              "description" -> (
+                j => j.description
+              ),
+              "cronExpression" -> (
+                j => Some(j.cronExpression)
+              ),
+              "priority" -> (
+                j => Some(j.priority.toString)
+              ),
+              "scheduleInformation" -> (
+                j => j.scheduleInformation
+              )
+            )
+
+            // Define field extractors for sorting
+            val sortExtractors: Map[String, JobInformation => Option[Comparable[Any]]] = Map(
+              "name" -> (
+                j => Some(j.name.asInstanceOf[Comparable[Any]])
+              ),
+              "group" -> (
+                j => Some(j.group.asInstanceOf[Comparable[Any]])
+              ),
+              "jobClassName" -> (
+                j => Some(j.jobClassName.asInstanceOf[Comparable[Any]])
+              ),
+              "cronExpression" -> (
+                j => Some(j.cronExpression.asInstanceOf[Comparable[Any]])
+              ),
+              "priority" -> (
+                j => Some(j.priority.asInstanceOf[Comparable[Any]])
+              ),
+              "lastScheduledFireTime" -> (
+                j => j.lastScheduledFireTime.map(_.asInstanceOf[Comparable[Any]])
+              ),
+              "nextScheduledFireTime" -> (
+                j => j.nextScheduledFireTime.map(_.asInstanceOf[Comparable[Any]])
+              )
+            )
+
+            // Apply filtering
+            val filtered = allJobs.filter(LuceneQueryParser.parseAndFilter(queryOpt, filterExtractors))
+
+            // Apply sorting
+            val sorted = SortUtility.sort(filtered, sortOpt, sortExtractors)
+
+            // Apply pagination
+            PaginationService.listToPage(sorted, paging.page.getOrElse(1), paging.rowsPerPage.getOrElse(DefaultRowsPerPage))
           }
         }
+      }
     }
 
   private val registerJobEndpoint = jobApiBaseEndpoint

@@ -34,7 +34,6 @@ const fetchJobClasses = async () => {
     loadingClasses.value = true;
     availableJobClasses.value = await jobsApi.possibleJobsList();
   } catch (e: any) {
-    console.error('Error fetching job classes:', e);
     error.value = e.message || 'Failed to load job classes';
   } finally {
     loadingClasses.value = false;
@@ -78,7 +77,6 @@ const handleSubmit = async () => {
     // Navigate back to jobs list
     router.push('/jobs');
   } catch (e: any) {
-    console.error('Error creating job:', e);
     error.value = e.message || t('jobsPage.toast.jobCreationFailed');
     toast.add({
       severity: 'error',

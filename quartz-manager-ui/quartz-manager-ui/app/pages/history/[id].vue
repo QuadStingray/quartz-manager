@@ -32,7 +32,6 @@ watch(pending, (isPending) => {
 // Update error state when asyncError changes
 watch(asyncError, (newError) => {
   if (newError) {
-    console.error('Error fetching history detail:', newError);
     error.value = newError.message || t('historyPage.retry');
   } else {
     error.value = null;
@@ -109,7 +108,7 @@ const goBack = () => {
       <div class="terminal-header">
         <div class="terminal-title">
           <i class="pi pi-terminal mr-2"></i>
-          <span>{{ historyDetail.className }}</span>
+          <span>{{ t('name') }}: {{ historyDetail.jobName || '-' }} - {{ t('group') }}: {{ historyDetail.jobGroup || '-' }} ({{ historyDetail.className }})</span>
         </div>
         <div class="terminal-meta">
           <span>{{ formatDateTime(historyDetail.date) }}</span>

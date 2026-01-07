@@ -1,6 +1,7 @@
 import { ref } from '#imports'
 import { useQuartzApi } from '../api/quartzApi';
 import type { Router } from 'vue-router';
+import {FetchError} from "~/composables/generated";
 
 export function useTokenManager() {
     const { authApi } = useQuartzApi();
@@ -11,6 +12,7 @@ export function useTokenManager() {
     const tokenExpiresAt = ref<Date | null>(null);
     const refreshInterval = ref<ReturnType<typeof setInterval> | null>(null);
     const cookieToken = ref<string | null>(null);
+    const authDisabled = ref<boolean | null>(null); // null = not checked yet, true = auth disabled (404), false = auth enabled
 
     // Constants
     const TOKEN_COOKIE_NAME = 'authToken';
@@ -64,8 +66,47 @@ export function useTokenManager() {
         }
     };
 
+    // Check if auth is disabled (returns true if login endpoint returns 404)
+    const checkAuthAvailability = async (): Promise<boolean> => {
+        if (authDisabled.value !== null) {
+            return authDisabled.value;
+        }
+
+        try {
+            // Try to call the login endpoint without credentials to check availability
+            const response = await authApi.loginRaw();
+            // If we get here without error, auth is enabled
+            authDisabled.value = false;
+            return false;
+        } catch (error: any) {
+            // Check if it's a 404 response - handle both direct response and fetch errors
+            const status = error?.response?.status || error?.status || error?.data?.status;
+
+            // Check error message for 404 indication (CORS errors with 404)
+            const errorMessage = error?.message || error?.toString() || '';
+            const isCorsError = errorMessage.includes('CORS') || errorMessage.includes('NetworkError') || errorMessage === "The request failed and the interceptors did not return an alternative response";
+
+            if (status === 404 || isCorsError || errorMessage.includes('404')) {
+                // Auth endpoint not found, disable auth
+                authDisabled.value = true;
+                return true;
+            }
+            // Any other error means auth is enabled but failed for other reasons (401, 403, etc.)
+            authDisabled.value = false;
+            return false;
+        }
+    };
+
     // Check if token is valid and update state
     const checkToken = async (force = false): Promise<boolean> => {
+        // First check if auth is disabled
+        const isAuthDisabled = await checkAuthAvailability();
+        if (isAuthDisabled) {
+            // Auth is disabled, always return true
+            isAuthenticated.value = true;
+            return true;
+        }
+
         if (isCheckingToken.value && !force) return isAuthenticated.value;
 
         try {
@@ -106,6 +147,11 @@ export function useTokenManager() {
 
     // Refresh token if needed
     const refreshTokenIfNeeded = async (): Promise<boolean> => {
+        // If auth is disabled, no need to refresh
+        if (authDisabled.value === true) {
+            return true;
+        }
+
         const expiration = getTokenExpiration();
         if (!expiration) return false;
 
@@ -204,6 +250,7 @@ export function useTokenManager() {
         isAuthenticated,
         isCheckingToken,
         tokenExpiresAt,
+        authDisabled,
         checkToken,
         refreshTokenIfNeeded,
         clearToken,

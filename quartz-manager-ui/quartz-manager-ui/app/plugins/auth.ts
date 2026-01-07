@@ -27,7 +27,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.hook('app:mounted', async () => {
         try {
             await tokenManager.initialize();
-            console.log('Token manager initialized successfully');
         } catch (error) {
             console.error('Failed to initialize token manager:', error);
         }

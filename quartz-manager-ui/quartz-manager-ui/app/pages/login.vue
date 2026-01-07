@@ -50,7 +50,6 @@ const handleLogin = async () => {
     // Redirect to home page
     router.push('/');
   } catch (error) {
-    console.error('Login error:', error);
     errorMessage.value = t('login.error');
   } finally {
     loading.value = false;

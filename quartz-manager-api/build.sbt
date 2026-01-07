@@ -2,7 +2,7 @@ name := "quartz-manager-api"
 
 buildInfoPackage := "dev.quadstingray.quartz.manager.api"
 
-val TapirVersion = "1.12.6"
+val TapirVersion = "1.13.4"
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-pekko-http-server" % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"      % TapirVersion
 libraryDependencies += "com.softwaremill.sttp.tapir" %% "tapir-json-circe"        % TapirVersion
@@ -23,5 +23,7 @@ libraryDependencies += "joda-time" % "joda-time" % "2.14.0"
 libraryDependencies += "io.github.classgraph" % "classgraph" % "4.8.184"
 
 libraryDependencies += "com.github.blemale" %% "scaffeine" % "5.3.0"
+
+libraryDependencies += "org.apache.lucene" % "lucene-queryparser" % "10.3.2"
 
 buildInfoOptions += BuildInfoOption.BuildTime

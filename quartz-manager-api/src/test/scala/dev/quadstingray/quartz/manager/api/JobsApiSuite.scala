@@ -95,13 +95,84 @@ class JobsApiSuite extends BaseServerSuite {
   }
 
   test("List all registered jobs") {
-    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")())
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(100)))
     assert(response.isSuccess)
     val value = response.body.getOrElse {
       throw new Exception(response.body.left.get.getMessage)
     }
     assertEquals(value.size, jobsRegistered)
     assert(value.exists(_.name == "jobForTesting0"))
+  }
+
+  test("List all registered jobs - sort by name ascending") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(sort = Some("name")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    val sortedByName = value.sortBy(_.name)
+    assertEquals(value, sortedByName)
+  }
+
+  test("List all registered jobs - query by single parameter") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(query = Some("group:testGroup")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(value.forall(_.group == "testGroup"))
+  }
+
+  test("List all registered jobs - query with two parameters") {
+    val response = TestAdditions.backend.send(
+      JobsApi().jobsList("", "admin", "pwd")(query = Some("group:testGroup AND jobClassName:dev.quadstingray.quartz.manager.SampleJob"))
+    )
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(
+      value.forall(
+        job => job.group == "testGroup" && job.jobClassName == "dev.quadstingray.quartz.manager.SampleJob"
+      )
+    )
+  }
+
+  test("List all registered jobs - query with OR operator") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(query = Some("name:jobForTesting8 OR name:jobForTesting0")))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assert(value.nonEmpty)
+    assert(value.size == 2)
+    assert(value.exists(_.name == "jobForTesting8"))
+    assert(value.exists(_.name == "jobForTesting0"))
+  }
+
+  test("List all registered jobs - pagination with page 1 and rowsPerPage 5") {
+    val response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(5), page = Some(1)))
+    assert(response.isSuccess)
+    val value = response.body.getOrElse {
+      throw new Exception(response.body.left.get.getMessage)
+    }
+    assertEquals(value.size, 5)
+  }
+
+  test("List all registered jobs - pagination page 2 with rowsPerPage 10") {
+    val page1Response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(10), page = Some(1)))
+    val page1Jobs = page1Response.body.getOrElse(List.empty)
+
+    val page2Response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(10), page = Some(2)))
+    assert(page2Response.isSuccess)
+    val page2Jobs = page2Response.body.getOrElse(List.empty)
+
+    assert(page2Jobs.nonEmpty)
+    // Ensure page 2 contains different jobs than page 1
+    assert(!page1Jobs.exists(j1 => page2Jobs.exists(j2 => j1.name == j2.name && j1.group == j2.group)))
   }
 
   test("Update an existing job") {
@@ -150,7 +221,7 @@ class JobsApiSuite extends BaseServerSuite {
     val response = TestAdditions.backend.send(JobsApi().deleteJob("", "admin", "pwd")("testGroup", "jobForTesting2"))
     assert(response.isSuccess)
     jobsRegistered -= 1
-    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")())
+    val listResponse = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(100)))
     assert(listResponse.isSuccess)
     val value = listResponse.body.getOrElse {
       throw new Exception(listResponse.body.left.get.getMessage)
