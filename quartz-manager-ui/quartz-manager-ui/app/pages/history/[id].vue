@@ -109,7 +109,7 @@ const goBack = () => {
       <div class="terminal-header">
         <div class="terminal-title">
           <i class="pi pi-terminal mr-2"></i>
-          <span>{{ historyDetail.className }}</span>
+          <span>{{ t('name') }}: {{ historyDetail.jobName || '-' }} - {{ t('group') }}: {{ historyDetail.jobGroup || '-' }} ({{ historyDetail.className }})</span>
         </div>
         <div class="terminal-meta">
           <span>{{ formatDateTime(historyDetail.date) }}</span>
