@@ -164,7 +164,7 @@ class JobsApiSuite extends BaseServerSuite {
 
   test("List all registered jobs - pagination page 2 with rowsPerPage 10") {
     val page1Response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(10), page = Some(1)))
-    val page1Jobs = page1Response.body.getOrElse(List.empty)
+    val page1Jobs     = page1Response.body.getOrElse(List.empty)
 
     val page2Response = TestAdditions.backend.send(JobsApi().jobsList("", "admin", "pwd")(rowsPerPage = Some(10), page = Some(2)))
     assert(page2Response.isSuccess)
@@ -172,7 +172,14 @@ class JobsApiSuite extends BaseServerSuite {
 
     assert(page2Jobs.nonEmpty)
     // Ensure page 2 contains different jobs than page 1
-    assert(!page1Jobs.exists(j1 => page2Jobs.exists(j2 => j1.name == j2.name && j1.group == j2.group)))
+    assert(
+      !page1Jobs.exists(
+        j1 =>
+          page2Jobs.exists(
+            j2 => j1.name == j2.name && j1.group == j2.group
+          )
+      )
+    )
   }
 
   test("Update an existing job") {

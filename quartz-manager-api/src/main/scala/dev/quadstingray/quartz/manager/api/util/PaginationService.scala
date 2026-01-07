@@ -1,18 +1,21 @@
 package dev.quadstingray.quartz.manager.api.util
 
-import dev.quadstingray.quartz.manager.api.model.Paging.DefaultRowsPerPage
 import dev.quadstingray.quartz.manager.api.model.PaginationInfo
+import dev.quadstingray.quartz.manager.api.model.Paging.DefaultRowsPerPage
 
 object PaginationService {
 
-  /**
-   * Paginates a list and returns the requested page along with pagination info
-   *
-   * @param list The full list to paginate
-   * @param page The page number (1-based)
-   * @param rowsPerPage Number of rows per page
-   * @return Tuple of (paginated list, pagination info)
-   */
+  /** Paginates a list and returns the requested page along with pagination info
+    *
+    * @param list
+    *   The full list to paginate
+    * @param page
+    *   The page number (1-based)
+    * @param rowsPerPage
+    *   Number of rows per page
+    * @return
+    *   Tuple of (paginated list, pagination info)
+    */
   def listToPage[T](list: List[T], page: Int, rowsPerPage: Int): (List[T], PaginationInfo) = {
     val actualPage        = Math.max(1, page)
     val actualRowsPerPage = if (rowsPerPage <= 0) DefaultRowsPerPage else rowsPerPage
@@ -24,16 +27,12 @@ object PaginationService {
 
     val paginatedList = if (startIndex < totalRows) {
       list.slice(startIndex, endIndex)
-    } else {
+    }
+    else {
       List.empty[T]
     }
 
-    val paginationInfo = PaginationInfo(
-      totalRows = totalRows,
-      rowsPerPage = actualRowsPerPage,
-      currentPage = safePage,
-      totalPages = totalPages
-    )
+    val paginationInfo = PaginationInfo(totalRows = totalRows, rowsPerPage = actualRowsPerPage, currentPage = safePage, totalPages = totalPages)
 
     (paginatedList, paginationInfo)
   }

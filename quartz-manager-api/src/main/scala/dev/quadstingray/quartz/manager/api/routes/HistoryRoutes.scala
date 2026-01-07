@@ -39,40 +39,60 @@ class HistoryRoutes(authenticationService: AuthenticationService) extends CirceS
     .method(Method.GET)
     .name("historyList")
     .serverLogic {
-      _ => { case (queryOpt, sortStringOpt, paging) =>
-        Future {
-          Right {
-            val sortOpt    = sortStringOpt.map(_.split(",").toList.map(_.trim).filter(_.nonEmpty))
-            val allRecords = HistoryService.cache.asMap().values.toList
+      _ =>
+        {
+          case (queryOpt, sortStringOpt, paging) =>
+            Future {
+              Right {
+                val sortOpt    = sortStringOpt.map(_.split(",").toList.map(_.trim).filter(_.nonEmpty))
+                val allRecords = HistoryService.cache.asMap().values.toList
 
-            // Define field extractors for filtering
-            val filterExtractors: Map[String, LogRecord => Option[String]] = Map(
-              "id" -> (r => Some(r.id)),
-              "className" -> (r => Some(r.className)),
-              "jobGroup" -> (r => r.jobGroup),
-              "jobName" -> (r => r.jobName)
-            )
+                // Define field extractors for filtering
+                val filterExtractors: Map[String, LogRecord => Option[String]] = Map(
+                  "id" -> (
+                    r => Some(r.id)
+                  ),
+                  "className" -> (
+                    r => Some(r.className)
+                  ),
+                  "jobGroup" -> (
+                    r => r.jobGroup
+                  ),
+                  "jobName" -> (
+                    r => r.jobName
+                  )
+                )
 
-            // Define field extractors for sorting
-            val sortExtractors: Map[String, LogRecord => Option[Comparable[Any]]] = Map(
-              "id" -> (r => Some(r.id.asInstanceOf[Comparable[Any]])),
-              "className" -> (r => Some(r.className.asInstanceOf[Comparable[Any]])),
-              "date" -> (r => Some(r.date.asInstanceOf[Comparable[Any]])),
-              "jobGroup" -> (r => r.jobGroup.map(_.asInstanceOf[Comparable[Any]])),
-              "jobName" -> (r => r.jobName.map(_.asInstanceOf[Comparable[Any]]))
-            )
+                // Define field extractors for sorting
+                val sortExtractors: Map[String, LogRecord => Option[Comparable[Any]]] = Map(
+                  "id" -> (
+                    r => Some(r.id.asInstanceOf[Comparable[Any]])
+                  ),
+                  "className" -> (
+                    r => Some(r.className.asInstanceOf[Comparable[Any]])
+                  ),
+                  "date" -> (
+                    r => Some(r.date.asInstanceOf[Comparable[Any]])
+                  ),
+                  "jobGroup" -> (
+                    r => r.jobGroup.map(_.asInstanceOf[Comparable[Any]])
+                  ),
+                  "jobName" -> (
+                    r => r.jobName.map(_.asInstanceOf[Comparable[Any]])
+                  )
+                )
 
-            // Apply filtering
-            val filtered = allRecords.filter(LuceneQueryParser.parseAndFilter(queryOpt, filterExtractors))
+                // Apply filtering
+                val filtered = allRecords.filter(LuceneQueryParser.parseAndFilter(queryOpt, filterExtractors))
 
-            // Apply sorting
-            val sorted = SortUtility.sort(filtered, sortOpt, sortExtractors)
+                // Apply sorting
+                val sorted = SortUtility.sort(filtered, sortOpt, sortExtractors)
 
-            // Apply pagination
-            PaginationService.listToPage(sorted, paging.page.getOrElse(1), paging.rowsPerPage.getOrElse(DefaultRowsPerPage))
-          }
+                // Apply pagination
+                PaginationService.listToPage(sorted, paging.page.getOrElse(1), paging.rowsPerPage.getOrElse(DefaultRowsPerPage))
+              }
+            }
         }
-      }
     }
 
   private val historyByIdEndpoint = historyApiBaseEndpoint

@@ -1,8 +1,8 @@
 package dev.quadstingray.quartz.manager.api.util
 
+import dev.quadstingray.quartz.manager.api.model.PaginationInfo
 import dev.quadstingray.quartz.manager.api.model.Paging
 import dev.quadstingray.quartz.manager.api.model.Paging.DefaultRowsPerPage
-import dev.quadstingray.quartz.manager.api.model.PaginationInfo
 import sttp.tapir._
 import sttp.tapir.server.PartialServerEndpoint
 import sttp.tapir.typelevel.ParamConcat

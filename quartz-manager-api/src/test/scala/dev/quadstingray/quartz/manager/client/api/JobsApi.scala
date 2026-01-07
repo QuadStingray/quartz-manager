@@ -112,7 +112,7 @@ class JobsApi(baseUrl: String) {
     rowsPerPage: Option[Int] = None,
     page: Option[Int] = None
   ): Request[Either[ResponseException[String, Exception], Seq[JobInformation]], Any] = {
-      val request = basicRequest
+    val request = basicRequest
       .method(Method.GET, uri"$baseUrl/api/jobs?query=${query}&sort=${sort}&rowsPerPage=${rowsPerPage}&page=${page}")
       .contentType("application/json")
 
