@@ -1,6 +1,7 @@
 package dev.quadstingray.quartz.manager.api
 
 import com.typesafe.scalalogging.LazyLogging
+import dev.quadstingray.quartz.manager.api.util.PaginationExtensions._
 import org.apache.pekko.http.scaladsl.model.AttributeKey
 import org.apache.pekko.http.scaladsl.server.RequestContext
 import scala.concurrent.ExecutionContext
@@ -9,6 +10,7 @@ import scala.util.Random
 import sttp.model.Method
 import sttp.tapir.server.interceptor.cors.CORSConfig
 import sttp.tapir.server.interceptor.cors.CORSConfig.AllowedMethods
+import sttp.tapir.server.interceptor.cors.CORSConfig.ExposedHeaders
 import sttp.tapir.server.interceptor.cors.CORSInterceptor
 import sttp.tapir.server.interceptor.RequestInterceptor
 import sttp.tapir.server.pekkohttp.PekkoHttpServerInterpreter
@@ -19,8 +21,9 @@ object HttpServer extends LazyLogging {
   lazy val requestIdAttributeKey: AttributeKey[String] = AttributeKey[String]("X-REQUEST-ID")
 
   private val serverOptions: PekkoHttpServerOptions = {
-    val corsConfig = CORSConfig.default.copy(allowedMethods =
-      AllowedMethods.Some(Set(Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.PATCH, Method.OPTIONS))
+    val corsConfig = CORSConfig.default.copy(
+      allowedMethods = AllowedMethods.Some(Set(Method.GET, Method.HEAD, Method.POST, Method.PUT, Method.DELETE, Method.PATCH, Method.OPTIONS)),
+      exposedHeaders = ExposedHeaders.Some(Set(HeaderPaginationPerPage, HeaderPaginationPage, HeaderPaginationCountRows, HeaderPaginationPagesCount))
     )
 
     val serverOptions = PekkoHttpServerOptions.customiseInterceptors
