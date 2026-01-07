@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.0] - 2026-01-07
+### :sparkles: New Features
+- [`530a67d`](https://github.com/QuadStingray/quartz-manager/commit/530a67dad1e9c2a6396e0222c2c6400b67a0a06f) - added job group and name to log records *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`b4ea42e`](https://github.com/QuadStingray/quartz-manager/commit/b4ea42e3ad69d4cb5f4cc0754dfa03526c79d47a) - added sort and filter for jobs and history queries *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`1597642`](https://github.com/QuadStingray/quartz-manager/commit/159764209e8d4b34f83caf157d9884c1c73b125f) - add pagination support for jobs and history queries *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`287aa5d`](https://github.com/QuadStingray/quartz-manager/commit/287aa5d406eaf261fd5633f4e7976a011581d913) - expose pagination headers in CORS configuration *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`c8a2bb6`](https://github.com/QuadStingray/quartz-manager/commit/c8a2bb61f1ff176a7eab1d3f2e507f1057037941) - search, filter and pagination in ui *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`c498add`](https://github.com/QuadStingray/quartz-manager/commit/c498add064a3e9863adf3253fd08019361357a9b) - disable login for ui when auth is disabled on server *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+
+### :bug: Bug Fixes
+- [`a0e04a3`](https://github.com/QuadStingray/quartz-manager/commit/a0e04a332a671a909ac6491e9e96c1deeb806ad4) - **ci**: correct email and name in Git configuration *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+
+### :recycle: Refactors
+- [`b418b02`](https://github.com/QuadStingray/quartz-manager/commit/b418b020b69c83bcb89ae6c80af6b95f32a3ffa4) - remove redundant console.error calls across UI components *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+
+### :white_check_mark: Tests
+- [`5bf6fcd`](https://github.com/QuadStingray/quartz-manager/commit/5bf6fcd2738145875658aa7d352947dd0d8d148f) - add additional job registration and execution assertions in HistoryApiSuite *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+
+
 ## [v0.8.0] - 2025-12-08
 ### :recycle: Refactors
 - [`7f35432`](https://github.com/QuadStingray/quartz-manager/commit/7f35432ee19840bd61787a9c9421ef359c4799cb) - rename all files and typos from `quarz` to `quartz`
@@ -132,3 +151,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v0.6.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.0.1...v0.6.0
 [v0.7.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.0.1...v0.7.0
 [v0.8.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.7.0...v0.8.0
+[v0.9.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.8.0...v0.9.0
