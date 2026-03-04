@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.9.1] - 2026-03-04
+### :wrench: Chores
+- [`59526f0`](https://github.com/QuadStingray/quartz-manager/commit/59526f067f8fb0d4189ce244dd1bf31b8deb609f) - **backend**: 11 dependency updates for quartz-manager *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+- [`b747d3a`](https://github.com/QuadStingray/quartz-manager/commit/b747d3a2de72f0a07f0328ac8481d26833be9959) - **ui**: update dependencies to latest versions *(commit by [@QuadStingray](https://github.com/QuadStingray))*
+
+
 ## [v0.9.0] - 2026-01-07
 ### :sparkles: New Features
 - [`530a67d`](https://github.com/QuadStingray/quartz-manager/commit/530a67dad1e9c2a6396e0222c2c6400b67a0a06f) - added job group and name to log records *(commit by [@QuadStingray](https://github.com/QuadStingray))*
@@ -152,3 +158,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [v0.7.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.0.1...v0.7.0
 [v0.8.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.7.0...v0.8.0
 [v0.9.0]: https://github.com/QuadStingray/quartz-manager/compare/v0.8.0...v0.9.0
+[v0.9.1]: https://github.com/QuadStingray/quartz-manager/compare/v0.9.0...v0.9.1
