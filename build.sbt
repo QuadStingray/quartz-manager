@@ -3,7 +3,7 @@ import dev.quadstingray.sbt.json.JsonFile
 
 lazy val root = Project(id = "quartz-manager-parent", base = file(".")).aggregate(api, ui)
 
-val scalaVersions = Seq("2.13.18", "3.7.4")
+val scalaVersions = Seq("2.13.18", "3.8.2")
 
 crossScalaVersions := scalaVersions
 
