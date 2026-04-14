@@ -6,12 +6,12 @@ Global / concurrentRestrictions ++= Seq(Tags.limit(Tags.Test, 1), Tags.limit(Tag
 
 ThisBuild / Test / scalacOptions ++= Seq("-Yrangepos")
 
-libraryDependencies += "org.scalameta" %% "munit" % "1.2.4" % Test
+libraryDependencies += "org.scalameta" %% "munit" % "1.3.0" % Test
 
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.32" % Test
 
 val sttpVersion = "3.11.0"
 libraryDependencies += "com.softwaremill.sttp.client3" %% "core"          % sttpVersion % Test
 libraryDependencies += "com.softwaremill.sttp.client3" %% "circe"         % sttpVersion % Test
-libraryDependencies += "joda-time"                      % "joda-time"     % "2.14.0"    % Test
+libraryDependencies += "joda-time"                      % "joda-time"     % "2.14.1"    % Test
 libraryDependencies += "io.circe"                      %% "circe-generic" % "0.14.15"   % Test
