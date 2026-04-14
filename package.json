@@ -1,28 +1,27 @@
 {
-  "name" : "quartz-manager",
-  "organization" : "dev.quadstingray",
-  "version" : "0.10.0",
-  "description" : "",
-  "directories" : {
-    
+  "name": "quartz-manager",
+  "organization": "dev.quadstingray",
+  "version": "0.10.0",
+  "description": "",
+  "directories": {},
+  "scripts": {
+    "api-codegen:remove-version": "jq 'del(.[\"generator-cli\"].version)' openapitools.json > tmp.json; mv tmp.json openapitools.json",
+    "api-codegen:clean": "rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/api; rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/core; rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/model;",
+    "build-ui": "rm -rf quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; mkdir -p quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; cd quartz-manager-ui/quartz-manager-ui && pnpm install && pnpm generate --dotenv webjar.env && cd ../..; cp -r -p quartz-manager-ui/quartz-manager-ui/.output/public/* quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui",
+    "dev": " cd quartz-manager-ui/quartz-manager-ui && pnpm dev && cd ../..;",
+    "api-codegen:ui": "rm -rf quartz-manager-ui/quartz-manager-ui/app/composables/generated; openapi-generator-cli generate --generator-key ui-api-generator;",
+    "api-codegen": "rm -rf client-project; openapi-generator-cli generate --generator-key api-generator;",
+    "api-codegen:copy": "pnpm api-codegen:clean; pnpm api-codegen:remove-version; pnpm api-codegen; yes | cp -r ./target/client-project/src/main/ ./quartz-manager-api/src/test/;  sbt Test/scalafmt;"
   },
-  "scripts" : {
-    "api-codegen:remove-version" : "jq 'del(.[\"generator-cli\"].version)' openapitools.json > tmp.json; mv tmp.json openapitools.json",
-    "api-codegen:clean" : "rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/api; rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/core; rm -rf ./quartz-manager-api/src/test/scala/dev/quadstingray/quartz/manager/api/client/model;",
-    "build-ui" : "rm -rf quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; mkdir -p quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui; cd quartz-manager-ui/quartz-manager-ui && pnpm install && pnpm generate --dotenv webjar.env && cd ../..; cp -r -p quartz-manager-ui/quartz-manager-ui/.output/public/* quartz-manager-ui/src/main/resources/META-INF/resources/webjars/quartz-manager-ui",
-    "dev" : " cd quartz-manager-ui/quartz-manager-ui && pnpm dev && cd ../..;",
-    "api-codegen:ui" : "rm -rf quartz-manager-ui/quartz-manager-ui/app/composables/generated; openapi-generator-cli generate --generator-key ui-api-generator;",
-    "api-codegen" : "rm -rf client-project; openapi-generator-cli generate --generator-key api-generator;",
-    "api-codegen:copy" : "pnpm api-codegen:clean; pnpm api-codegen:remove-version; pnpm api-codegen; yes | cp -r ./target/client-project/src/main/ ./quartz-manager-api/src/test/;  sbt Test/scalafmt;"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuadStingray/quartz-manager.git"
   },
-  "repository" : {
-    "type" : "git",
-    "url" : "git+https://github.com/QuadStingray/quartz-manager.git"
+  "author": "info@quadstingray.dev",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/QuadStingray/quartz-manager/issues"
   },
-  "author" : "info@quadstingray.dev",
-  "license" : "Apache-2.0",
-  "bugs" : {
-    "url" : "https://github.com/QuadStingray/quartz-manager/issues"
-  },
-  "homepage" : "https://www.quadstingray.dev"
+  "homepage": "https://www.quadstingray.dev",
+  "packageManager": "pnpm@10.33.0"
 }
