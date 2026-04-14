@@ -1,3 +1,5 @@
+![](quartz-manager-ui/quartz-manager-ui/public/quartz-manager-logo-with-text.svg)
+
 # Quartz Manager
 
 A REST API and Web UI for managing Quartz Scheduler jobs, built with [Tapir](https://tapir.softwaremill.com/en/latest/) and [Apache Pekko HTTP](https://pekko.apache.org/docs/pekko-http/current/).

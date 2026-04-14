@@ -47,11 +47,11 @@ onMounted(() => {
       @item-click="onItemClick"
     >
       <template #header>
-        <div v-if="!collapsed" class="flex">
-          <img class="m-6 w-8" src="/nuxt-logo.svg" alt="Nuxt">
+        <div v-if="!collapsed" class="flex px-3 py-4">
+          <img class="w-full" src="/quartz-manager-logo-with-text.svg" alt="Quartz Manager">
         </div>
-        <div v-else>
-          <img class="ml-4 mt-2 w-6" src="/nuxt-logo.svg" alt="Nuxt">
+        <div v-else class="flex justify-center py-3">
+          <img class="w-9 h-9" src="/quartz-manager-logo.svg" alt="Quartz Manager">
         </div>
       </template>
       <template #footer>

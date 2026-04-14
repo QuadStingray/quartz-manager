@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1010 240" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gearGrad" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#5EC85A"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Gear icon (scaled from 512x512, centered in 240px height) -->
+  <g transform="translate(15, 20) scale(0.39)">
+
+    <!-- Gear shape (12 teeth) -->
+    <path fill="url(#gearGrad)" d="
+      M 256,64
+      A 192 192 0 0 1 286.0,66.4  L 299.5,32.2  A 228 228 0 0 1 330.2,40.4  L 324.8,76.8
+      A 192 192 0 0 1 376.8,106.8 L 405.6,83.9  A 228 228 0 0 1 428.1,106.4 L 405.2,135.2
+      A 192 192 0 0 1 435.2,187.2 L 471.6,181.8 A 228 228 0 0 1 479.8,212.5 L 445.6,226.0
+      A 192 192 0 0 1 445.6,286.0 L 479.8,299.5 A 228 228 0 0 1 471.6,330.2 L 435.2,324.8
+      A 192 192 0 0 1 405.2,376.8 L 428.1,405.6 A 228 228 0 0 1 405.6,428.1 L 376.8,405.2
+      A 192 192 0 0 1 324.8,435.2 L 330.2,471.6 A 228 228 0 0 1 299.5,479.8 L 286.0,445.6
+      A 192 192 0 0 1 226.0,445.6 L 212.5,479.8 A 228 228 0 0 1 181.8,471.6 L 187.2,435.2
+      A 192 192 0 0 1 135.2,405.2 L 106.4,428.1 A 228 228 0 0 1 83.9,405.6  L 106.8,376.8
+      A 192 192 0 0 1 76.8,324.8  L 40.4,330.2  A 228 228 0 0 1 32.2,299.5  L 66.4,286.0
+      A 192 192 0 0 1 66.4,226.0  L 32.2,212.5  A 228 228 0 0 1 40.4,181.8  L 76.8,187.2
+      A 192 192 0 0 1 106.8,135.2 L 83.9,106.4  A 228 228 0 0 1 106.4,83.9  L 135.2,106.8
+      A 192 192 0 0 1 187.2,76.8  L 181.8,40.4  A 228 228 0 0 1 212.5,32.2  L 226.0,66.4
+      A 192 192 0 0 1 256,64
+      Z"/>
+
+    <!-- White clock face -->
+    <circle cx="256" cy="256" r="170" fill="white"/>
+
+    <!-- Clock bezel ring -->
+    <circle cx="256" cy="256" r="161" fill="none" stroke="#3A9C40" stroke-width="8"/>
+
+    <!-- Hour tick marks (12 positions) -->
+    <g stroke="#3A9C40" stroke-width="7" stroke-linecap="round">
+      <!-- 12 --> <line x1="256"   y1="111"   x2="256"   y2="94"/>
+      <!-- 1  --> <line x1="328.5" y1="130.4" x2="337"   y2="115.7"/>
+      <!-- 2  --> <line x1="381.6" y1="183.5" x2="396.3" y2="175"/>
+      <!-- 3  --> <line x1="401"   y1="256"   x2="418"   y2="256"/>
+      <!-- 4  --> <line x1="381.6" y1="328.5" x2="396.3" y2="337"/>
+      <!-- 5  --> <line x1="328.5" y1="381.6" x2="337"   y2="396.3"/>
+      <!-- 6  --> <line x1="256"   y1="401"   x2="256"   y2="418"/>
+      <!-- 7  --> <line x1="183.5" y1="381.6" x2="175"   y2="396.3"/>
+      <!-- 8  --> <line x1="130.4" y1="328.5" x2="115.7" y2="337"/>
+      <!-- 9  --> <line x1="111"   y1="256"   x2="94"    y2="256"/>
+      <!-- 10 --> <line x1="130.4" y1="183.5" x2="115.7" y2="175"/>
+      <!-- 11 --> <line x1="183.5" y1="130.4" x2="175"   y2="115.7"/>
+    </g>
+
+    <!-- Hour hand (~10 o'clock, 215°) -->
+    <line x1="256" y1="256" x2="191" y2="210"
+          stroke="#3A9C40" stroke-width="13" stroke-linecap="round"/>
+
+    <!-- Minute hand (~2 o'clock / 10 min, 330°) -->
+    <line x1="256" y1="256" x2="343" y2="206"
+          stroke="#3A9C40" stroke-width="9" stroke-linecap="round"/>
+
+    <!-- Center dot -->
+    <circle cx="256" cy="256" r="11" fill="#3A9C40"/>
+  </g>
+
+  <!-- Text block -->
+  <g transform="translate(240, 128)">
+    <text
+      font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      font-size="82"
+      font-weight="800"
+      letter-spacing="1">
+      <tspan fill="#FFFFFF">QUARTZ </tspan><tspan fill="#10b981">MANAGER</tspan>
+    </text>
+
+    <text
+      x="4" y="54"
+      font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      font-size="35"
+      font-weight="400"
+      fill="#94A3B8"
+      letter-spacing="1.5">
+      API &amp; UI for Quartz Scheduler
+    </text>
+  </g>
+</svg>

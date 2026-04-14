@@ -19,7 +19,7 @@
   "name": "Name",
   "description": "Description",
   "status": "Status",
-  "version": "Version",
+  "quartz.version": "Quartz Version",
   "date": "Date",
   "dashboard": {
     "title": "System Dashboard",

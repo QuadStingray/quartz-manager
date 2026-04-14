@@ -1,5 +1,6 @@
 import Aura from '@primeuix/themes/aura'
 import pkg from './package.json'
+import mainpkg from '../../package.json'
 
 export const wrappedPrimeInputs: string[] = ['AutoComplete', 'CascadeSelect', 'Checkbox', 'Chip', 'ColorPicker', 'DatePicker', 'InputMask', 'InputNumber', 'InputOtp', 'InputText', 'Knob', 'Listbox', 'MultiSelect', 'Password', 'RadioButton', 'Rating', 'Select', 'SelectButton', 'Slider', 'Textarea', 'ToggleButton', 'ToggleSwitch', 'TreeSelect']
 
@@ -23,7 +24,7 @@ export default defineNuxtConfig({
     devtools: {enabled: true},
     runtimeConfig: {
         public: {
-            APP_VERSION: pkg.version,
+            APP_VERSION: mainpkg.version,
             APP_NAME: pkg.name,
             // eslint-disable-next-line node/prefer-global/process
             APP_MODE: process.env?.NODE_ENV,

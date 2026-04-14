@@ -143,7 +143,7 @@ const toggleScheduler = async () => {
               <span class="text-2xl font-semibold">{{ overview.scheduler.threadPoolSize }}</span>
             </div>
             <div class="flex flex-col gap-2">
-              <span class="text-sm text-gray-500">{{ t('version') }}</span>
+              <span class="text-sm text-gray-500">{{ t('quartz.version') }}</span>
               <span class="text-lg font-semibold">{{ overview.scheduler.version }}</span>
             </div>
           </div>
