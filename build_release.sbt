@@ -3,8 +3,9 @@ import dev.quadstingray.sbt.json.JsonFile
 import sbtrelease.ReleasePlugin.autoImport.ReleaseKeys.versions
 import sbtrelease.ReleasePlugin.autoImport.ReleaseTransformations.*
 import sbtrelease.ReleasePlugin.runtimeVersion
-
 import scala.sys.process.*
+
+releaseIgnoreUntrackedFiles := true
 
 val gitAddAllTask = ReleaseStep(action = st => {
   "git add .".!
@@ -35,8 +36,8 @@ releaseCommitMessage     := s"ci: prepare release of version ${runtimeVersion.va
 commands += Command.command("ci-release")(
   (state: State) => {
     val semVersion = new Semver(version.value)
-    if ((semVersion.getSuffixTokens == null || semVersion.getSuffixTokens.length == 0)) {
-      val callback: (String) => Unit = (s: String) => state.log.err(s"error on release parsing: $s")
+    if (semVersion.getSuffixTokens == null || semVersion.getSuffixTokens.length == 0) {
+      val callback: String => Unit = (s: String) => state.log.err(s"error on release parsing: $s")
       Command.process("release with-defaults", state, callback)
     }
     else {
